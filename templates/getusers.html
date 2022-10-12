@@ -1,0 +1,23 @@
+<html>
+  <head>
+      <div class="container">
+        <h1 class="logo">Get users from patent</h1>
+  </head>
+
+  <body>
+   
+  <div class='container'>
+      <h3>Past here text of your patents</h3>
+      <form name="input" action="{{ url_for('getusers') }}"  method="POST">
+         <span class="resizable-input">
+         <input type="text" id="input" name="inputP"/>
+         </span>
+         <br>
+         <br>
+         <button type="submit" method="POST"> Submit </button>
+      </form>
+  </div>
+
+</body>
+
+</html>

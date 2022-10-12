@@ -1,0 +1,78 @@
+body {
+  margin: 0;
+  padding: 0;
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  color: #444;
+  background-opacity: .1;
+  background-image: url("output.jpg");
+  background-repeat: no-repeat;
+  background-size:cover;
+}
+/*
+ * Formatting the header area
+ */
+header {
+  background-color: #0000FF;
+  height: 35px;
+  width: 100%;
+  opacity: .9;
+  margin-bottom: 10px;
+}
+header h1.logo {
+  margin: 0;
+  font-size: 1.7em;
+  color: #fff;
+  text-transform: uppercase;
+  float: left;
+}
+header h1.logo:hover {
+  color: #fff;
+  text-decoration: none;
+}
+/*
+ * Centering the body content
+ */
+
+h2 {
+  font-size: 3em;
+  margin-top: 40px;
+  text-align: left;
+  letter-spacing: -2px;
+}
+h3 {
+  font-size: 1.7em;
+  font-weight: 100;
+  margin-top: 30px;
+  text-align: left;
+  letter-spacing: -1px;
+  color: #999;
+}
+.menu {
+  float: left;
+  margin-top: 35px;
+  text-align: left;
+  height: 35px;
+  width: 100%;
+  opacity: .9;
+}
+.menu li {
+  height: 50px;
+}
+.menu li a {
+  font-size: 1.7em;
+  color: #000000;
+}
+resizable-input {
+    /* make resizable */
+    overflow-x: hidden;
+    resize: vertical;
+    display: inline-block;
+
+    /* no extra spaces */
+    padding: 0;
+    margin: 0;
+    white-space: nowrap;
+    width: 50px;
+    heigth: 50px;
+
+
