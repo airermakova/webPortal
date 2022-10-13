@@ -10,10 +10,16 @@
   <div class='container'>
       <h3>Past here text of your patents</h3>
       <form name="input" action="{{ url_for('getusers') }}"  method="POST">
-         <textarea type="text" id="input" name="inputP" rows="10"></textarea>
+         <textarea type="text" id="input" name="inputP" rows="10" align="left">{{inputP}}</textarea>
          <br>
          <br>
          <button type="submit" method="POST"> Submit </button>
+         <br>
+         <br>
+         <textarea type="text" id="output" name="outputP" rows="6">
+              Results: 
+              {{outputP}}              
+         </textarea>
       </form>
   </div>
 

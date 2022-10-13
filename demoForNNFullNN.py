@@ -5,6 +5,7 @@ from flair.models import SequenceTagger
 from flair.trainers import ModelTrainer
 from flair.data import Sentence
 import sys
+import os
 import re
 import nltk
 import numpy
@@ -37,21 +38,12 @@ usersCounts = []
 comUsersCounts = []
 threadsL = []
 sema = Semaphore(1)
-simpleF = open("markedSimpleUsersOnlyFullNN.txt", "w")
-markedPhrasesFile = open("markedPhrasesFullNN.txt", "w")
-complexPhrasesFile = open("markedComplexUsersOnlyFullNN.txt", "w")
-userStatistics = open("markedUsersStatisticsFullNN.txt", "w")
 
-#simpleF.close()
-markedPhrasesFile.close()
-#complexPhrasesFile.close()
-#userStatistics.close()
-#usersNotInListFile.close()
 
 markedPhrasesFileName = "markedPhrasesFullNN.txt"
-
-model = SequenceTagger.load("C:/Users/airer/Documents/Pisa/Classifier/trainerNRFinal10Rep/final-model.pt")
-
+model = SequenceTagger.load(os.getcwd() + "/trainerNRFinal10Rep/final-model.pt")
+if model is not None:
+    print("MODEL LOADED")
 #TO GET PHRASES
 def getPhrasesFromFile(phr):
     phrases= []  
@@ -64,163 +56,37 @@ def getPhrasesFromFile(phr):
       print("Error in reading " + fileName)
       exit()
 
-#TO MARK USERS AS WE HAVE DONE FOR TRAIN SET
+def getUsers(p):
+    sent = markSentence(p)
+    users = extractUsers(sent)
+    return users
 
-def getDataFromFile(fileName):
-    users = []        
-    try:
-       word_file = open (fileName, "r", encoding='utf-8')
-       print("file object created")
-       for l in word_file:
-           users.append(l.replace('\r', '').replace('\n', ''))
-       word_file.close()
-       return users
-    except:
-      print("Error in reading " + fileName)
-      if len(users)>0:
-          print(users[len(users)-1])
-      exit()
+def extractUsers(sent):
+    users=[]
+    changedsent = sent.replace("[","").replace("]","").replace("<","").replace(">","")
+    words = changedsent.split(",")    
+    for wrd in words:
+        user = wrd.split("/")
+        if len(user)>1:
+            us = re.sub(r'\W+', '', user[0])
+            if user[1]=="B":                
+                users.append(us)
+            elif user[1]=="I":
+                users[len(users)-1] += us + " "
+    return users
 
-#TO MARK USERS IN PHRASES 
 
-def markUsers(phrases):
-    finArr = []
-    for phrase in phrases:
-       marked = getUsersFromNN(phrase)
-       #print(marked)
-       finArr.append(marked)
-    return finArr    
-
-   
-def getUsersFromNN(phrase):
-    # create example sentence
-    sentence = Sentence(phrase)
-    # predict tags and print
+def markSentence(p):
+    sentence = Sentence(p)
     model.predict(sentence)
     sent = sentence.to_tagged_string()
-    onlusers = sent.split("[")
-    #create tuples
-    onlyUsers = []
-    if len(onlusers)<2:
-        return onlyUsers
-    tupleArr = onlusers[1].split(",")
-    if len(tupleArr)<1:
-        return onlyUsers
-    for tp in tupleArr: 
-        t = tp.split("/")
-        if len(t)>1:
-            if t[1] == "<unk>" or t[1] == "<unk>]":
-                t[1] = "O"
-            onlyUsers.append(tuple(t))
-    return onlyUsers
-
-#TO STORE MARKED PHRASES IN FINAL FILE
-
-def writeUsersFile(finalArray):
-    finStr = ""
-    for arr in finalArray:
-           finStr = finStr + (' '.join(str(s) for s in arr) + "\n\n") 
-    with open(markedPhrasesFileName, 'a') as f:    
-        f.write(finStr.encode("utf-8").decode())  
-
-
-def writeOnlySimpleUsersFile(finalArray):
-    for i in range(0, len(finalArray)-2):
-        found = False
-        wr = False
-        arr = list(finalArray[i])
-        for y in range(0, len(arr)-2):
-            for s in arr[y]:
-                 if s == "B":
-                     found = True
-            if found == True:
-                for s in arr[y+1]:
-                    if s!= "I":
-                        wr = True
-        if wr == True:
-            simpleF.write(' '.join(str(s) for s in finalArray[i]) + "\n\n")  
-
-
-
-def writeOnlyComUsersFile(finalArray):    
-    for i in range(0, len(finalArray)-2):
-        found = False
-        wr = False
-        arr = list(finalArray[i])        
-        for y in range(0, len(arr)-2):
-            for s in arr[y]:
-                 if s == "B":
-                     found = True
-            if found == True:
-                for s in arr[y+1]:
-                    if s == "I":
-                        wr = True
-        if wr == True:
-            complexPhrasesFile.write(' '.join(str(s) for s in finalArray[i]) + "\n\n") 
-
-
-def getUsersStatistics(finalArray):           
-     for i in range(0, len(finalArray)-2):
-        found = False
-        wr = False
-        arr = list(finalArray[i])
-        for y in range(0, len(arr)-2):
-            for s in arr[y]:
-                 suser = s
-                 if s == "B":
-                     found = True
-            if found == True:
-                for s in arr[y+1]:
-                    if s == "I":
-                        wr = True
-        if wr == True:
-            str = ""
-            for y in range(0, len(arr)-2):
-                us = list(arr[y])
-                if us[1] == "B": 
-                    str = us[0]
-                if us[1] == "I":
-                    str = str + " " + us[0]
-                if us[1]!="B" and us[1]!="I" and len(str)>0:
-                    if str not in allComUsers: 
-                        allComUsers.append(str)
-                        comUsersCounts.append(1)
-                    else: 
-                        ind = allComUsers.index(str)
-                        if ind>=0:
-                            comUsersCounts[ind] = comUsersCounts[ind] + 1                   
-        elif wr == False and found == True:
-            for y in range(0, len(arr)-2):
-                us = list(arr[y])
-                if us[1] == "B":
-                    if us[0] not in allSimUsers: 
-                        allSimUsers.append(us[0])
-                        usersCounts.append(1)
-                    else: 
-                        ind = allSimUsers.index(us[0])
-                        if ind>=0:
-                            usersCounts[ind] = usersCounts[ind] + 1
-                    
-
-def writeUsersStatFile():   
-    for i in range(0, len(allSimUsers)-1):
-        tw = allSimUsers[i] + "-" + str(usersCounts[i]) + "\n"
-        simpleF.write(tw)
-        userStatistics.write(tw)
-    for i in range(0, len(allComUsers)-1):
-        tw = allComUsers[i] + "-" + str(comUsersCounts[i])+ "\n"
-        userStatistics.write(tw)
-        complexPhrasesFile.write(tw)
-            
-def printData():
-    print(allSimUsers)
-    print(allComUsers)
-
+    return sent
 
 #MAIN SCRIPT
 
 def writeUsers():
     phr = []  
+    users=[]
     threadsL.append(1) 
     while len(phrases)>1:
         try: 
@@ -229,20 +95,23 @@ def writeUsers():
                 for i in range(0,10):
                     phr.append(phrases[i]) 
             else:
-                phr = phrases
+                for i in range(0,len(phrases)):
+                    phr.append(phrases[i]) 
             for i in range(0,len(phr)):
-                phrases.pop(0)   
-            sema.release()   
-            finalArray = markUsers(phr)
-            getUsersStatistics(finalArray) 
-            writeUsersFile(finalArray)     
-            printData()
+                phrases.pop(0) 
+            sema.release() 
+            for p in phr:
+                users.append(getUsers(p))
         except:
             print("Exception")     
     threadsL.pop(0)
     print("THREAD FINISHED " + str(len(threadsL)))
     if len(threadsL)<=1:
-        writeUsersStatFile()
+        f = open("results.txt","w")
+        for us in users:
+            print("user - " + ' '.join([str(elem) for elem in us]))
+            f.write(' '.join([str(elem) for elem in us]) + " ")
+        f.close()
         print("STATISTICS WRITTEN ")
     
 
