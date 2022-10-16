@@ -32,12 +32,14 @@ def getusers():
         print("POST "+str(path))
         if len(str(path))>1:
             phrases = path
-            arg = str(path).replace(" ", "_")
+            myString = str(path).strip('\n\t')
+            arg = myString.replace(" ", "_")
             print(arg)
             command = "C:/Users/airer/AppData/Local/Programs/Python/Python36/python.exe demoForNNFullNN.py " + arg
             os.system(command)
             with open('results.txt', 'r') as file:
-                output = file.read()
+                output = file.read().replace(".", "\n")
+            
     return render_template('getusers.html', inputP=path, outputP=output)
 
 

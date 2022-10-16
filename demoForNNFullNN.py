@@ -62,15 +62,15 @@ def getUsers(p):
     return users
 
 def extractUsers(sent):
-    users=[]
     changedsent = sent.replace("[","").replace("]","").replace("<","").replace(">","")
     words = changedsent.split(",")    
     for wrd in words:
         user = wrd.split("/")
         if len(user)>1:
-            us = re.sub(r'\W+', '', user[0])
-            if user[1]=="B":                
-                users.append(us)
+            us = ''.join(e for e in user[0] if e.isalnum())
+            if user[1]=="B": 
+                arg = us+" "               
+                users.append(arg)
             elif user[1]=="I":
                 users[len(users)-1] += us + " "
     return users
@@ -86,14 +86,13 @@ def markSentence(p):
 
 def writeUsers():
     phr = []  
-    users=[]
     threadsL.append(1) 
     while len(phrases)>1:
         try: 
             sema.acquire()
             if len(phrases)>=10:
                 for i in range(0,10):
-                    phr.append(phrases[i]) 
+                    phr.append(phrases[i])
             else:
                 for i in range(0,len(phrases)):
                     phr.append(phrases[i]) 
@@ -101,16 +100,22 @@ def writeUsers():
                 phrases.pop(0) 
             sema.release() 
             for p in phr:
-                users.append(getUsers(p))
+                us = getUsers(p)
+                users.extend(us)
         except:
             print("Exception")     
     threadsL.pop(0)
     print("THREAD FINISHED " + str(len(threadsL)))
-    if len(threadsL)<=1:
+    if len(threadsL)==0:
+        finUsers=[]
         f = open("results.txt","w")
         for us in users:
-            print("user - " + ' '.join([str(elem) for elem in us]))
-            f.write(' '.join([str(elem) for elem in us]) + " ")
+            ar = ''.join(str(u) for u in us)
+            if ar not in finUsers:
+                finUsers.append(ar)
+        for us in finUsers:
+                print("user - " + us)
+                f.write(us+".")
         f.close()
         print("STATISTICS WRITTEN ")
     
