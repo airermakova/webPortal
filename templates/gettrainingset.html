@@ -25,12 +25,16 @@
          <input type=submit value="Create trainingset">
          <br>
          <br>
-         <textarea type="text" id="output" name="outputP" rows="15">      
+         <textarea type="text" id="output" name="outputP" rows="15"> 
+            
 Results:
  
 {{outputP}}     
          
          </textarea>
+      <br>
+      <br>
+      <a href="{{ url_for('download', filename="trainnrC1.txt") }}">See trainset file</a> 
       </form>
       <a href="http://127.0.0.1:5000/">Back</a> 
 
