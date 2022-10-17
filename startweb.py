@@ -13,9 +13,47 @@ app = Flask(__name__)
 def home():
     return render_template('index.html')
 
-@app.route('/gettrainingset/')
+
+def allowed_txt_file(filename):
+    return '.' in filename and \
+           filename.rsplit('.', 1)[1].lower() in "txt"
+
+@app.route('/gettrainingset/', methods=['GET','POST'])
 def gettrainingset():
-    return render_template('gettrainingset.html')
+    path=""
+    output=""
+    args = []
+    if request.method == "POST":
+        print("POST")
+        #phrases number area
+        inputN = request.form.get('inputN')
+        num = request.form['inputN']
+        inputN = request.form.get('inputF')
+        st = request.form['inputF']
+        if num == None or num=="":
+             num = "0"
+        if st == None or st=="":
+             st = "0"
+        print(num + "..." + st)
+        #file uploading area
+        file = request.files['file']
+        if file.filename == '':
+            output = 'No text file selected'
+        elif allowed_txt_file(file.filename):
+            file.save(os.path.join(testmodelpath,file.filename))
+            args.append(os.path.join(testmodelpath,file.filename))
+            args.append(st)
+            args.append(num)
+            command = "C:/Users/airer/AppData/Local/Programs/Python/Python36/python.exe prepareTestSetsComplexUsersNoRepeat.py " + " ".join(args)
+            os.system(command)
+            with open('onlyDetectedUsersNR1.txt', 'r') as file:
+                output = file.read()
+        else:
+            output="uploaded file has to have .txt extention"            
+    return render_template('gettrainingset.html', outputP=output)
+
+
+
 
 def allowed_file(filename):
     return '.' in filename and \
