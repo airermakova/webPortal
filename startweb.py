@@ -44,10 +44,17 @@ def getchecknn():
             output = 'No model file selected'
         elif allowed_file(file.filename):
             file.save(os.path.join(testmodelpath,file.filename))
-            args.append(os.path.join(testmodelpath,"patents.txt"))
+            #arguments construction
+            txt = request.files['text']
+            txtname = "patents.txt"
+            if txt.filename != '':
+                txtname = txt.filename
+                txt.save(os.path.join(testmodelpath,txt.filename))
+            args.append(os.path.join(testmodelpath,txtname))
             args.append(st)
             args.append(num)
             args.append(os.path.join(testmodelpath,file.filename))
+            
             command = "C:/Users/airer/AppData/Local/Programs/Python/Python36/python.exe FlaiNNTestMultiThreading.py " + " ".join(args)
             os.system(command)
             with open('NNStatistics.txt', 'r') as file:
