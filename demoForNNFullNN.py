@@ -106,7 +106,7 @@ def writeUsers():
             print("Exception")     
     threadsL.pop(0)
     print("THREAD FINISHED " + str(len(threadsL)))
-    if len(threadsL)==0:
+    if len(threadsL)<=1:
         finUsers=[]
         f = open("results.txt","w")
         for us in users:
