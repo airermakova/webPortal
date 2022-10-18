@@ -9,11 +9,20 @@
    
   <div class='container'>
       <h3>Past here text of your patents</h3>
-      <form name="input" action="{{ url_for('getusers') }}"  method="POST">
+      <form name="getuser" enctype=multipart/form-data method="POST">
+         Copy and past text of your patents here (if less than 1000 words):
+         <br>
          <textarea type="text" id="input" name="inputP" rows="15" align="left">{{inputP}}</textarea>
          <br>
          <br>
-         <button type="submit" method="POST"> Submit </button>
+         Or upload your text file
+         <br>
+         <br>
+         <input type=file name=pat>
+         <br>
+         <br>
+         <br>
+         <input type="submit" method="POST"> Submit </input>
          <br>
          <br>
          <textarea type="text" id="output" name="outputP" rows="15">      

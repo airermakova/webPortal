@@ -121,10 +121,23 @@ def getusers():
         inputP = request.form.get('inputP')
         path = request.form['inputP']
         print("POST "+str(path))
+        arg=""
         if len(str(path))>1:
             myString = str(path).strip('\n\t')
             arg = myString.replace(" ", "_")
             print(arg)
+
+        #file uploading area
+        file = request.files['pat']
+        if file.filename != '':
+            file.save(os.path.join(os.getcwd(),file.filename))
+            cars=[]
+            with open(os.path.join(os.getcwd(),file.filename), 'r') as file:
+               cars += file.read().splitlines()             
+            for c in cars:
+                arg+=c.replace(" ","_") + "."
+        print(arg)
+        if len(arg)>0:
             command = "C:/Users/airer/AppData/Local/Programs/Python/Python36/python.exe demoForNNFullNN.py " + arg
             os.system(command)
             with open('results.txt', 'r') as file:
