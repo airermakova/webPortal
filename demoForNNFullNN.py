@@ -58,8 +58,8 @@ def getPhrasesFromFile(phr):
 
 def getUsers(p):
     sent = markSentence(p)
-    users = extractUsers(sent)
-    return users
+    fusers = extractUsers(sent)
+    return fusers
 
 def extractUsers(sent):
     changedsent = sent.replace("[","").replace("]","").replace("<","").replace(">","")
@@ -100,15 +100,15 @@ def writeUsers():
                 phrases.pop(0) 
             sema.release() 
             for p in phr:
-                us = getUsers(p)
-                users.extend(us)
+                us = getUsers(p)                
         except:
             print("Exception")     
     threadsL.pop(0)
     print("THREAD FINISHED " + str(len(threadsL)))
-    if len(threadsL)<=1:
+    if len(threadsL)<=1:        
         finUsers=[]
         f = open("results.txt","w")
+        print(len(users))
         for us in users:
             ar = ''.join(str(u) for u in us)
             if ar not in finUsers:
