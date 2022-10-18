@@ -33,6 +33,7 @@ users = []
 goldsets = []
 globalUsers = []
 globalCount = []
+onlyUsers = []
 foundUsers = []
 threadsL = []
 sema = Semaphore(1)
@@ -126,7 +127,6 @@ print("Taken users - " + str(len(users)))
 
 
 def checkMarkedArrayPresence(phrases, users):
-    onlyUsers = []
     registeredUser = []
     for phrase in phrases:
         nltk_tags = pos_tag(word_tokenize(phrase))  
@@ -295,15 +295,14 @@ def writeUsers():
             for i in range(0,len(phr)):
                 trainSet.pop(0)   
             sema.release()  
-            fin = checkMarkedArrayPresence(phr, users)
+            checkMarkedArrayPresence(phr, users)
             cnt = len(fin)
-            if cnt>0:
-                writeResultFile(fin)
         except:
              print("Exception")
     threadsL.pop(0)
     print("THREAD FINISHED " + str(len(threadsL)))
     if len(threadsL)==0:
+        writeResultFile(onlyUsers)
         writeUsersFile()
         print("STATISTICS WRITTEN ")
         
