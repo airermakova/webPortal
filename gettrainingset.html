@@ -1,0 +1,45 @@
+<html>
+  <head>
+      <div class="container">
+        <h1 class="logo">Prepare training set for neural network</h1>
+      <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+  </head>
+
+  <body>
+   
+  <div class='container'>
+      <h3></h3>
+      <form name="input" enctype=multipart/form-data method="POST">
+         Upload your text file for training, shall be .txt file
+         <br>
+         <br>
+         <input type=file name=file>
+         <br>
+         <br>
+         Number of phrases to take(for all phrases leave blank)
+         <input type="text" id="input" name="inputN"/>
+         <br><br>
+         First phrase to take from(To start from first phrase leave blank)
+         <input type="text" id="input" name="inputF"/>
+         <br><br>
+         <input type=submit value="Create trainingset">
+         <br>
+         <br>
+         <textarea type="text" id="output" name="outputP" rows="15"> 
+            
+Results:
+ 
+{{outputP}}     
+         
+         </textarea>
+      <br>
+      <br>
+      <a href="{{ url_for('download', filename="trainnrC1.txt") }}">See trainset file</a> 
+      </form>
+      <a href="http://127.0.0.1:5000/">Back</a> 
+
+  </div>
+
+</body>
+
+</html>

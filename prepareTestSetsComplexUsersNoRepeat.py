@@ -149,26 +149,28 @@ def checkMarkedArrayPresence(phr):
              if iob[2]=="I":
                  regStr += " " + iob[0]
              if iob[2]=="O" and len(regStr)>0:
+                 registeredUser.append(regStr)
+                 if len(regStr.split(" "))>1:
+                     allowAppend = True
+                 elif len(regStr)>0 and regStr[len(regStr) - 2:]=="er":
+                     allowAppend = True
                  if regStr not in globalUsers:
                      globalUsers.append(regStr)
                      globalCount.append(1)
                  else:
                      ind = globalUsers.index(regStr)
                      globalCount[ind] = globalCount[ind]+1
-
-                 registeredUser.append(regStr)
-                 if len(regStr.split(" "))>1:
-                     allowAppend = True
-                 elif len(regStr)>0 and regStr[len(regStr) - 2:]=="er":
-                     allowAppend = True
                  regStr = ""
                  newLen = newLen + 1
         if newLen>0 or len(regStr)>0:
-            if len(regStr)>0:
-                registeredUser.append(regStr)
-            for us in registeredUser: 
-                if us not in foundUsers or foundUsers.count(us)<10:
-                    foundUsers.append(us)
+            if regStr!="" and regStr not in globalUsers:
+                     globalUsers.append(regStr)
+                     globalCount.append(1)
+            elif regStr!="":
+                     ind = globalUsers.index(regStr)
+                     globalCount[ind] = globalCount[ind]+1
+            if regStr not in foundUsers or foundUsers.count(regStr)<10:
+                    foundUsers.append(regStr)
                     allowAppend = True
             if allowAppend == True:
                 onlyUsers.append(iob_tagged)
