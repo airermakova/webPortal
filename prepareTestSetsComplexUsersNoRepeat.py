@@ -75,7 +75,7 @@ def getDataFromFile(fileName):
     users = []        
     try:
        word_file = open (fileName, "r", encoding='utf-8')
-       print("file object created")
+       #print("file object created")
        for l in word_file:
            user = l.replace('\r', '').replace('\n', '')
            #    user = stemmer.stem(m)
@@ -126,17 +126,20 @@ print("Taken users - " + str(len(users)))
 #print(len(goldsets))
 
 
-def checkMarkedArrayPresence(phrases, users):
+def checkMarkedArrayPresence(phr):
     registeredUser = []
-    for phrase in phrases:
+    for phrase in phr:
         nltk_tags = pos_tag(word_tokenize(phrase))  
         iob_tagged = tree2conlltags(nltk_tags) 
         userFound = False
-        for user in users:
-            ind = phrase.find(user)
-            us = user.split(" ")
-            if ind>0:
-               iob_tagged = markUser(iob_tagged, us)
+        for user in users:  
+            us = []      
+            if user in phrase:    
+               if " " in user:                    
+                   us = user.split(" ")
+               else:
+                   us.append(user)               
+               iob_tagged = markUser(iob_tagged, us)                     
         regStr = ""
         newLen = 0
         allowAppend = False         
@@ -146,6 +149,13 @@ def checkMarkedArrayPresence(phrases, users):
              if iob[2]=="I":
                  regStr += " " + iob[0]
              if iob[2]=="O" and len(regStr)>0:
+                 if regStr not in globalUsers:
+                     globalUsers.append(regStr)
+                     globalCount.append(1)
+                 else:
+                     ind = globalUsers.index(regStr)
+                     globalCount[ind] = globalCount[ind]+1
+
                  registeredUser.append(regStr)
                  if len(regStr.split(" "))>1:
                      allowAppend = True
@@ -166,19 +176,9 @@ def checkMarkedArrayPresence(phrases, users):
 
        
 def markUser(phrase,user):
+  try:
     finTuple = []
-    users = []
-    found = False
-    #print(user)
-    exists = user in globalUsers
-    if exists == False:
-        globalUsers.append(user)
-        globalCount.append(0)
-    else:
-        ind = globalUsers.index(user)
-        globalCount[ind] = globalCount[ind]+1
-    #print("Length of all detected users " + str(len(globalCount)))
-    
+    found = False       
     if len(user)>1:
        nonFirst = False
        cnt = 0
@@ -227,7 +227,11 @@ def markUser(phrase,user):
                    ls[2]="B"
                    finTuple[cnt+1] = (tuple(ls))
     return finTuple
- 
+  except:
+     print("Exception user marking")
+
+
+
 def writeResultFile(trainSet):
     with open(trName, 'a') as f:
         for arr in trainSet:
@@ -273,8 +277,7 @@ def writeUsersFile():
     if len(globalUsers) != len(globalCount):
         return
     for i in range(0, len(globalCount)):
-        for gl in range(0, len(globalUsers[i])):
-            usersFile.write(str(globalUsers[i][gl]) + " ") 
+        usersFile.write(str(globalUsers[i]))
         usersFile.write(": ")
         usersFile.write(str(globalCount[i]))
         usersFile.write("\n") 
@@ -293,18 +296,18 @@ def writeUsers():
             else:
                 phr = trainSet
             for i in range(0,len(phr)):
-                trainSet.pop(0)   
-            sema.release()  
-            checkMarkedArrayPresence(phr, users)
-            cnt = len(fin)
+                trainSet.pop(0) 
+            sema.release() 
+            checkMarkedArrayPresence(phr)
+            phr.clear()
         except:
-             print("Exception")
+             print("Exception thread")
     threadsL.pop(0)
-    print("THREAD FINISHED " + str(len(threadsL)))
+    #print("THREAD FINISHED " + str(len(threadsL)))
     if len(threadsL)==0:
         writeResultFile(onlyUsers)
         writeUsersFile()
-        print("STATISTICS WRITTEN ")
+        #print("STATISTICS WRITTEN ")
         
 
 #MAIN SCRIPTS
@@ -322,9 +325,8 @@ for cnt in range(0,10):
 
 
 for ph in threads:
-    print("thread start")
+    #print("thread start")
     ph.start()
-
 
 
 

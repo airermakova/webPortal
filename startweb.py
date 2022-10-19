@@ -123,9 +123,9 @@ def getusers():
         print("POST "+str(path))
         arg=""
         if len(str(path))>1:
-            myString = str(path).strip('\n\t')
-            arg = myString.replace(" ", "_")
-            print(arg)
+            cars = str(path).splitlines()
+            for c in cars:
+                arg+=c.replace(" ","_") + "."
 
         #file uploading area
         file = request.files['pat']
