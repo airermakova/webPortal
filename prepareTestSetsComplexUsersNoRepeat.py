@@ -145,7 +145,7 @@ def checkMarkedArrayPresence(phr):
         allowAppend = False         
         for iob in iob_tagged:
              if iob[2]=="B" :
-                 regStr = iob[0]                 
+                 regStr = iob[0]             
              if iob[2]=="I":
                  regStr += " " + iob[0]
              if iob[2]=="O" and len(regStr)>0:
@@ -163,8 +163,10 @@ def checkMarkedArrayPresence(phr):
                      allowAppend = True
                  regStr = ""
                  newLen = newLen + 1
-        if newLen>0:
-            for us in registeredUser:
+        if newLen>0 or len(regStr)>0:
+            if len(regStr)>0:
+                registeredUser.append(regStr)
+            for us in registeredUser: 
                 if us not in foundUsers or foundUsers.count(us)<10:
                     foundUsers.append(us)
                     allowAppend = True
