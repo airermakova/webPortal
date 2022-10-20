@@ -59,8 +59,8 @@ def getPhrasesFromFile(fileName, st, fin):
     try:
        with codecs.open(fileName, 'r', "utf-8") as file:
            phrases = file.read().split(".")
-       if fin == 0 or fin>len(phrases):
-           fin = len(phrases)-1
+       if fin > len(phrases) or fin == 0:
+           return phrases
        for i in range(st,fin):
            finArr.append(phrases[i])
        return finArr
@@ -116,8 +116,7 @@ print(phSt)
 phNum = int(sys.argv[3])
 print(phNum)
 trainSet = getPhrasesFromFile(dataFileName, phSt, phNum)
-print("Taken phrases - ")
-print(len(trainSet))
+print("Taken phrases - " + str(trainSet))
 
 users = getDataFromFile(os.path.join(testmodelpath,"usersList.txt"))
 print("Taken users - " + str(len(users)))
@@ -294,11 +293,11 @@ def writeUsers():
     while len(trainSet)>0:
         try: 
             sema.acquire()
-            if len(trainSet)>=10:
-                for i in range(0,10):
-                    phr.append(trainSet[i]) 
-            else:
-                phr = trainSet
+            finVal = 10
+            if len(trainSet)<10:
+                finVal = len(trainSet)            
+            for i in range(0,finVal):
+                    phr.append(trainSet[i])
             for i in range(0,len(phr)):
                 trainSet.pop(0) 
             sema.release() 
