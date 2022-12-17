@@ -1,4 +1,4 @@
-from flask import Flask, render_template, Response, request, redirect, url_for, send_from_directory, current_app
+from flask import Flask, render_template, Response, request, redirect, url_for, send_from_directory, current_app, send_file
 from urllib.request import urlopen
 import mechanicalsoup
 
@@ -25,6 +25,14 @@ def download(filename):
     uploads = os.path.join(current_app.root_path)
     # Returning file from appended path
     return send_from_directory(os.getcwd(), "trainnrC1.txt")
+
+
+@app.route('/downloads/<path:filename>', methods=['GET', 'POST'])
+def downloads(filename):
+    # Appending app path to upload folder path within app root folder
+    uploads = os.path.join(current_app.root_path)
+    # Returning file from appended path
+    return send_file(os.path.join(os.getcwd(),filename), as_attachment=True)
 
 
 @app.route('/gettrainingset/', methods=['GET','POST'])
@@ -58,9 +66,10 @@ def gettrainingset():
             with open('onlyDetectedUsersNR1.txt', 'r') as file:
                 output = file.read()
             print(os.path.join(os.getcwd(),"trainnrC1.txt"))
-            send_from_directory(os.getcwd(), "trainnrC1.txt")   
+            send_from_directory(os.getcwd(), "trainnrC1.txt")
         else:
-            output="uploaded file has to have .txt extention"            
+            output="uploaded file has to have .txt extention"
+                  
     return render_template('gettrainingset.html', outputP=output)
 
 
