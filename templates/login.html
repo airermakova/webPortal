@@ -1,0 +1,23 @@
+<html>
+<head>
+    <title>Flask app</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+  </head>
+
+  <body>
+    <header>
+     <form action="" method = "POST">
+       <h1 class="logo">Portal for NER recognition and NN training.</h1>
+       <br><br>
+       <p>email <input type = "email" name = "email" /></p>
+       <p>password <input type = "password" name = "password" /></p>
+       <p> submit <input type = "submit" value = "Submit" /></p>
+
+       <h5>Dont Have an account?</h5>
+       <h3><a href = "{{url_for('register') }}">Register Here</a></h3>
+
+     </form>
+ 
+    </header>
+  </body>
+</html>

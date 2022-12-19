@@ -1,16 +1,16 @@
 <html>
   <head>
       <div class="container">
-        <h1 class="logo">Test neural network</h1>
+        <h1 class="logo">Prepare training set for neural network</h1>
       <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
   </head>
 
   <body>
    
   <div class='container'>
-      <h3>Past here text of your patents</h3>
+      <h3></h3>
       <form name="input" enctype=multipart/form-data method="POST">
-         Upload your text file for training
+         Upload your text file for training, shall be .txt file
          <br>
          <br>
          <input type=file name=file>
@@ -34,7 +34,10 @@ Results:
          </textarea>
       <br>
       <br>
-      <a href="{{ url_for('download', filename="trainnrC1.txt") }}">See trainset file</a> 
+      <a href="{{ url_for('download', filename="trainnrC1.txt") }}">See trainset file</a>
+      <br>
+      <br>
+      <a href="http://127.0.0.1:5000/downloads/trainnrC1.txt">Download trainset file</a>
       </form>
       <a href="http://127.0.0.1:5000/">Back</a> 
 

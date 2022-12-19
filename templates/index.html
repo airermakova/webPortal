@@ -6,7 +6,12 @@
   <body>
     <header>
       <div class="container">
-        <h1 class="logo">Portal for NER recognition and NN training</h1>
+        <h1 class="logo">Portal for NER recognition and NN training.</h1>
+        <p>
+        You are logged in as {{ current_user.username }} 
+        <a href="{{ url_for('logout') }}">Logout </a>
+        </p>
+        </h1>
         <strong><nav>
           <ul class="menu">
             <li><a href="{{ url_for('gettrainingset') }}"> Prepare training set </a></li>
@@ -15,6 +20,7 @@
           </ul>
         </nav></strong>
       </div>
+      
     </header>
   </body>
 </html>

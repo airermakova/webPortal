@@ -1,15 +1,29 @@
 from flask import Flask, render_template, Response, request, redirect, url_for, send_from_directory, current_app, send_file
 from urllib.request import urlopen
 import mechanicalsoup
-
+from flask import Flask,render_template,request,redirect
+from flask_login import login_required, current_user, login_user, logout_user
+from models import UserModel,db,login
 import sys
 import os
 
 testmodelpath=os.getcwd()+"/testmodel"
 
-
 app = Flask(__name__)
+app.secret_key = 'xyz' 
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///data.db'
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+db.init_app(app)
+login.init_app(app)
+login.login_view = 'login'
+ 
+@app.before_first_request
+def create_all():
+    db.create_all()
+
+
 @app.route('/')
+@login_required
 def home():
     return render_template('index.html')
 
@@ -153,6 +167,47 @@ def getusers():
                 output = file.read().replace(".", "\n")
             
     return render_template('getusers.html', inputP=path, outputP=output)
+
+
+@app.route('/login', methods = ['POST', 'GET'])
+def login():
+    if current_user.is_authenticated:
+        return redirect('/')
+     
+    if request.method == 'POST':
+        email = request.form['email']
+        user = UserModel.query.filter_by(email = email).first()
+        if user is not None and user.check_password(request.form['password']):
+            login_user(user)
+            return redirect('/')     
+    return render_template('login.html')
+
+ 
+@app.route('/register', methods=['POST', 'GET'])
+def register():
+    if current_user.is_authenticated:
+        return redirect('/')
+     
+    if request.method == 'POST':
+        email = request.form['email']
+        username = request.form['username']
+        password = request.form['password']
+ 
+        if UserModel.query.filter_by(email=email).first():
+            return ('Email already Present')
+             
+        user = UserModel(email=email, username=username)
+        user.set_password(password)
+        db.session.add(user)
+        db.session.commit()
+        return redirect('/login')
+    return render_template('register.html')
+ 
+ 
+@app.route('/logout')
+def logout():
+    logout_user()
+    return redirect('/')
 
 
 
