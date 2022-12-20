@@ -115,6 +115,8 @@ phSt = int(sys.argv[2])
 print(phSt)
 phNum = int(sys.argv[3])
 print(phNum)
+path = int(sys.argv[4])
+print(path)
 trainSet = getPhrasesFromFile(dataFileName, phSt, phNum)
 print("Taken phrases - " + str(trainSet))
 
@@ -319,7 +321,7 @@ def writeUsers():
 rep = 0
 i=0
 
-usersFile = open("onlyDetectedUsersNR1.txt", "w")
+usersFile = open(os.path.join(path,"onlyDetectedUsersNR1.txt"), "w")
 #writeUsers(trainSet, users)
 
 threads = []

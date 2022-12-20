@@ -96,6 +96,7 @@ def writeUsers():
             else:
                 for i in range(0,len(phrases)):
                     phr.append(phrases[i]) 
+
             for i in range(0,len(phr)):
                 phrases.pop(0) 
             sema.release() 
@@ -107,7 +108,7 @@ def writeUsers():
     print("THREAD FINISHED " + str(len(threadsL)))
     if len(threadsL)<=1:        
         finUsers=[]
-        f = open("results.txt","w")
+        f = open(os.path.join(path, "results.txt"),"w")
         print(len(users))
         for us in users:
             ar = ''.join(str(u) for u in us)
@@ -121,6 +122,7 @@ def writeUsers():
     
 
 text = str(sys.argv[1])
+path = str(sys.argv[2])
 textdata = text.replace("_", " ")
 print("INPUT TEXT " + textdata)
 

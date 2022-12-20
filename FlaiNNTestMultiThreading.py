@@ -106,11 +106,12 @@ print(phNum)
 trainSet = getPhrasesFromFile(dataFileName, phStart, phNum)
 print("Taken phrases - ")
 print(len(trainSet))
-users = getDataFromFile(os.path.join(testmodelpath,"usersList.txt"))
-print("Taken users - ")
-print(len(users))
 print("MODEL - " + sys.argv[4])
 model = SequenceTagger.load(sys.argv[4])
+path = sys.argv[5]
+users = getDataFromFile(os.path.join(path,"usersList.txt"))
+print("Taken users - ")
+print(len(users))
 #goldsets = getWordsFromGoldenSet("GoldenSet.txt")
 #print("Taken goldsets - ")
 #print(len(goldsets))
@@ -241,7 +242,7 @@ def getUsersFromNN(phrase):
 #TO WRITE RESULTS
 
 def writeResults():
-    tr = open("NNStatistics.txt", "w")
+    tr = open(os.path.join(path,"NNStatistics.txt"), "w")
     tr.write(" total users number - ")
     tr.write(str(totalNumber[0]))
     tr.write("\n")
@@ -270,7 +271,7 @@ def writeResults():
         tr.write("\n")
     tr.close()
 
-    tr = open("FullNNStatistics.txt", "w")
+    tr = open(os.path.join(path,"FullNNStatistics.txt"), "w")
     tr.write(" total users number - ")
     tr.write(str(totalNumber[0]))
     tr.write("\n")

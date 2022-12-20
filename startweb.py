@@ -6,8 +6,11 @@ from flask_login import login_required, current_user, login_user, logout_user
 from models import UserModel,db,login
 import sys
 import os
+import shutil
 
-testmodelpath=os.getcwd()+"/testmodel"
+
+testmodelpath=os.path.join(os.getcwd(),"testmodel")
+userdatapath=os.path.join(os.getcwd(),"userdata")
 
 app = Flask(__name__)
 app.secret_key = 'xyz' 
@@ -31,6 +34,17 @@ def home():
 def allowed_txt_file(filename):
     return '.' in filename and \
            filename.rsplit('.', 1)[1].lower() in "txt"
+
+def prepareUsersFiles(file, username, pyscriptname):
+    userpath=os.path.join(userdatapath, username)
+    if(os.path.exists(userpath)==False):
+         os.mkdir(userpath)
+    if(os.path.exists(os.path.join(userpath, pyscriptname))==False):
+         shutil.copyfile(pyscriptname, os.path.join(userpath, pyscriptname))
+    if(os.path.exists(os.path.join(userpath, "usersList.txt"))==False):
+        shutil.copyfile(os.path.join(testmodelpath, "usersList.txt"), os.path.join(userpath, "usersList.txt"))
+    if(file is not None):
+        file.save(os.path.join(userpath,file.filename))
 
 
 @app.route('/uploads/<path:filename>', methods=['GET', 'POST'])
@@ -71,27 +85,29 @@ def gettrainingset():
         if file.filename == '':
             output = 'No text file selected'
         elif allowed_txt_file(file.filename):
-            file.save(os.path.join(testmodelpath,file.filename))
-            args.append(os.path.join(testmodelpath,file.filename))
+            prepareUsersFiles(file, current_user.username, "prepareTestSetsComplexUsersNoRepeat.py")
+            userpath=os.path.join(userdatapath, current_user.username)
+            args.append(os.path.join(userpath,file.filename))
             args.append(st)
             args.append(num)
-            command = "C:/Users/airer/AppData/Local/Programs/Python/Python36/python.exe prepareTestSetsComplexUsersNoRepeat.py " + " ".join(args)
+            args.append(userpath)
+            command = "C:/Users/airer/AppData/Local/Programs/Python/Python36/python.exe " + str(os.path.join(userpath,'prepareTestSetsComplexUsersNoRepeat.py')) + " " + " ".join(args)
+            print(command)
             os.system(command)
-            with open('onlyDetectedUsersNR1.txt', 'r') as file:
+            with open(os.path.join(userpath,'onlyDetectedUsersNR1.txt'), 'r') as file:
                 output = file.read()
-            print(os.path.join(os.getcwd(),"trainnrC1.txt"))
-            send_from_directory(os.getcwd(), "trainnrC1.txt")
+            print(os.path.join(userpath,"trainnrC1.txt"))
+            send_from_directory(userpath, "trainnrC1.txt")
         else:
             output="uploaded file has to have .txt extention"
                   
     return render_template('gettrainingset.html', outputP=output)
 
 
-
-
 def allowed_file(filename):
     return '.' in filename and \
            filename.rsplit('.', 1)[1].lower() in "pt"
+
 
 @app.route('/getchecknn/', methods=['GET','POST'])
 def getchecknn():
@@ -115,21 +131,22 @@ def getchecknn():
         if file.filename == '':
             output = 'No model file selected'
         elif allowed_file(file.filename):
-            file.save(os.path.join(testmodelpath,file.filename))
+            userpath=os.path.join(userdatapath, current_user.username)
+            prepareUsersFiles(file, current_user.username, "FlaiNNTestMultiThreading.py")
             #arguments construction
             txt = request.files['text']
             txtname = "patents.txt"
             if txt.filename != '':
                 txtname = txt.filename
-                txt.save(os.path.join(testmodelpath,txt.filename))
-            args.append(os.path.join(testmodelpath,txtname))
+                txt.save(os.path.join(userpath,txt.filename))
+            args.append(os.path.join(userpath,txtname))
             args.append(st)
             args.append(num)
-            args.append(os.path.join(testmodelpath,file.filename))
-            
-            command = "C:/Users/airer/AppData/Local/Programs/Python/Python36/python.exe FlaiNNTestMultiThreading.py " + " ".join(args)
+            args.append(os.path.join(userpath,file.filename))
+            args.append(userpath)
+            command = "C:/Users/airer/AppData/Local/Programs/Python/Python36/python.exe " + os.path.join(userpath,"FlaiNNTestMultiThreading.py") + " " + " ".join(args)
             os.system(command)
-            with open('NNStatistics.txt', 'r') as file:
+            with open(os.path.join(userpath,'NNStatistics.txt'), 'r') as file:
                 output = file.read()
         else:
             output="uploaded file has to have .pt extention"            
@@ -145,25 +162,31 @@ def getusers():
         path = request.form['inputP']
         print("POST "+str(path))
         arg=""
+        args=[]
         if len(str(path))>1:
             cars = str(path).splitlines()
             for c in cars:
                 arg+=c.replace(" ","_") + "."
-
+        userpath=os.path.join(userdatapath, current_user.username)
         #file uploading area
         file = request.files['pat']
-        if file.filename != '':
-            file.save(os.path.join(os.getcwd(),file.filename))
+        
+        if file.filename != '':    
+            prepareUsersFiles(file, current_user.username, "demoForNNFullNN.py")        
             cars=[]
             with open(os.path.join(os.getcwd(),file.filename), 'r') as file:
                cars += file.read().splitlines()             
             for c in cars:
                 arg+=c.replace(" ","_") + "."
-        print(arg)
+            args.append(arg)
+            args.append(userpath)
+        else:
+            prepareUsersFiles(None, current_user.username, "demoForNNFullNN.py") 
+        #print(arg)
         if len(arg)>0:
-            command = "C:/Users/airer/AppData/Local/Programs/Python/Python36/python.exe demoForNNFullNN.py " + arg
+            command = "C:/Users/airer/AppData/Local/Programs/Python/Python36/python.exe " + os.path.join(userpath, "demoForNNFullNN.py") + " " + " ".join(args)
             os.system(command)
-            with open('results.txt', 'r') as file:
+            with open(os.path.join(userpath,'results.txt'), 'r') as file:
                 output = file.read().replace(".", "\n")
             
     return render_template('getusers.html', inputP=path, outputP=output)
