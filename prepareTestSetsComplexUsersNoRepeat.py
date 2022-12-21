@@ -39,17 +39,6 @@ threadsL = []
 sema = Semaphore(1)
 stemmer = SnowballStemmer("english")
 
-trName = "trainnrC1.txt"
-vName = "valnrC1.txt"
-teName = "testnrC1.txt"
-tr = open(trName, "w")
-v = open(vName, "w")
-te = open(teName, "w")
-
-tr.close()
-v.close()
-te.close()
-
 
 #TO GET PHRASES
 def getPhrasesFromFile(fileName, st, fin):
@@ -115,11 +104,21 @@ phSt = int(sys.argv[2])
 print(phSt)
 phNum = int(sys.argv[3])
 print(phNum)
-path = int(sys.argv[4])
+path = str(sys.argv[4])
 print(path)
+trName = str(os.path.join(path,"trainnrC1.txt"))
+vName = str(os.path.join(path,"valnrC1.txt"))
+teName = str(os.path.join(path,"testnrC1.txt"))
+tr = open(trName, "w")
+v = open(vName, "w")
+te = open(teName, "w")
+
+tr.close()
+v.close()
+te.close()
+
 trainSet = getPhrasesFromFile(dataFileName, phSt, phNum)
 print("Taken phrases - " + str(trainSet))
-
 users = getDataFromFile(os.path.join(testmodelpath,"usersList.txt"))
 print("Taken users - " + str(len(users)))
 #goldsets = getWordsFromGoldenSet("GoldenSet.txt")

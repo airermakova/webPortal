@@ -7,6 +7,8 @@ from models import UserModel,db,login
 import sys
 import os
 import shutil
+import ray
+import time
 
 
 testmodelpath=os.path.join(os.getcwd(),"testmodel")
@@ -45,6 +47,27 @@ def prepareUsersFiles(file, username, pyscriptname):
         shutil.copyfile(os.path.join(testmodelpath, "usersList.txt"), os.path.join(userpath, "usersList.txt"))
     if(file is not None):
         file.save(os.path.join(userpath,file.filename))
+
+
+@ray.remote
+def runCommand(command):
+    print(command)
+    os.system(command)
+
+
+def run_remotely(command):
+    ray.shutdown()
+    ray.init()
+    start_time = time.time()
+    results = ray.get([runCommand.remote(command) for _ in range(os.cpu_count())])
+    duration = time.time() - start_time
+    print('Sequence size: {}, Remote execution time: {}'.format(command, duration)) 
+
+
+def allowed_file(filename):
+    return '.' in filename and \
+           filename.rsplit('.', 1)[1].lower() in "pt"
+
 
 
 @app.route('/uploads/<path:filename>', methods=['GET', 'POST'])
@@ -93,20 +116,14 @@ def gettrainingset():
             args.append(userpath)
             command = "C:/Users/airer/AppData/Local/Programs/Python/Python36/python.exe " + str(os.path.join(userpath,'prepareTestSetsComplexUsersNoRepeat.py')) + " " + " ".join(args)
             print(command)
-            os.system(command)
+            run_remotely(command)
             with open(os.path.join(userpath,'onlyDetectedUsersNR1.txt'), 'r') as file:
                 output = file.read()
             print(os.path.join(userpath,"trainnrC1.txt"))
             send_from_directory(userpath, "trainnrC1.txt")
         else:
             output="uploaded file has to have .txt extention"
-                  
     return render_template('gettrainingset.html', outputP=output)
-
-
-def allowed_file(filename):
-    return '.' in filename and \
-           filename.rsplit('.', 1)[1].lower() in "pt"
 
 
 @app.route('/getchecknn/', methods=['GET','POST'])
@@ -145,7 +162,7 @@ def getchecknn():
             args.append(os.path.join(userpath,file.filename))
             args.append(userpath)
             command = "C:/Users/airer/AppData/Local/Programs/Python/Python36/python.exe " + os.path.join(userpath,"FlaiNNTestMultiThreading.py") + " " + " ".join(args)
-            os.system(command)
+            run_remotely(command)
             with open(os.path.join(userpath,'NNStatistics.txt'), 'r') as file:
                 output = file.read()
         else:
@@ -185,10 +202,9 @@ def getusers():
         #print(arg)
         if len(arg)>0:
             command = "C:/Users/airer/AppData/Local/Programs/Python/Python36/python.exe " + os.path.join(userpath, "demoForNNFullNN.py") + " " + " ".join(args)
-            os.system(command)
+            run_remotely(command)
             with open(os.path.join(userpath,'results.txt'), 'r') as file:
                 output = file.read().replace(".", "\n")
-            
     return render_template('getusers.html', inputP=path, outputP=output)
 
 
