@@ -38,7 +38,8 @@ usersCounts = []
 comUsersCounts = []
 threadsL = []
 sema = Semaphore(1)
-
+priorPosList=["NN","JJ"]
+lastPosList=["NN","RB","DT"]
 
 markedPhrasesFileName = "markedPhrasesFullNN.txt"
 model = SequenceTagger.load(os.getcwd() + "/trainerNRFinal10Rep/final-model.pt")
@@ -58,21 +59,24 @@ def getPhrasesFromFile(phr):
 
 def getUsers(p):
     sent = markSentence(p)
-    fusers = extractUsers(sent)
+    fusers = extractUsers(sent, p)
     return fusers
 
-def extractUsers(sent):
+def extractUsers(sent, phrase):
     changedsent = sent.replace("[","").replace("]","").replace("<","").replace(">","")
-    words = changedsent.split(",")    
+    pos = list(pos_tag(phrase.split(" ")))    
+    words = changedsent.split(",")  
+    i=0
     for wrd in words:
         user = wrd.split("/")
         if len(user)>1:
             us = ''.join(e for e in user[0] if e.isalnum())
-            if user[1]=="B": 
+            if user[1]=="B" and pos[i][1] in priorPosList: 
                 arg = us+" "               
                 users.append(arg)
-            elif user[1]=="I":
+            elif user[1]=="I" and pos[i][1] in lastPosList:
                 users[len(users)-1] += us + " "
+        i=i+1
     return users
 
 
