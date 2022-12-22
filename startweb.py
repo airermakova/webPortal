@@ -123,6 +123,7 @@ def gettrainingset():
             send_from_directory(userpath, "trainnrC1.txt")
         else:
             output="uploaded file has to have .txt extention"
+        os.remove(os.path.join(userpath,"prepareTestSetsComplexUsersNoRepeat.py"))
     return render_template('gettrainingset.html', outputP=output)
 
 
@@ -166,7 +167,9 @@ def getchecknn():
             with open(os.path.join(userpath,'NNStatistics.txt'), 'r') as file:
                 output = file.read()
         else:
-            output="uploaded file has to have .pt extention"            
+            output="uploaded file has to have .pt extention"
+        os.remove(os.path.join(userpath,file.filename))
+        os.remove(os.path.join(userpath,"FlaiNNTestMultiThreading.py"))            
     return render_template('getchecknn.html', outputP=output)
 
 
@@ -205,7 +208,50 @@ def getusers():
             run_remotely(command)
             with open(os.path.join(userpath,'results.txt'), 'r') as file:
                 output = file.read().replace(".", "\n")
+        os.remove(os.path.join(userpath,"demoForNNFullNN.py"))
     return render_template('getusers.html', inputP=path, outputP=output)
+
+
+@app.route('/trainnn/', methods=['GET','POST'])
+def trainnn():
+    path=""
+    output=""
+    args = []
+    if request.method == "POST":
+        print("POST")
+        #training settings area
+        inputME = request.form.get('inputME')
+        inputLR = request.form.get('inputLR')
+        inputPred = request.form['inputPred']
+        if inputME == None or inputME=="":
+             inputME = "10"
+        if inputLR == None or inputLR=="":
+             inputLR = "0.1"
+        if inputPred == None or inputPred=="":
+             inputPred = "ner"
+        #file uploading area
+        file = request.files['file']
+        if file.filename == '':
+            output = 'No training set uploaded'
+        elif allowed_txt_file(file.filename):
+            prepareUsersFiles(file, current_user.username, "FlaiNNTrainingScriptNR.py")
+            userpath=os.path.join(userdatapath, current_user.username)
+            args.append(os.path.join(userpath,file.filename))
+            args.append(inputPred)
+            args.append(inputME)
+            args.append(inputLR)
+            args.append(userpath)
+            command = "C:/Users/airer/AppData/Local/Programs/Python/Python36/python.exe " + str(os.path.join(userpath,'FlaiNNTrainingScriptNR.py')) + " " + " ".join(args)
+            print(command)
+            run_remotely(command)
+            if os.path.exists(os.path.join(userpath,"trainedModel",'final-model.pt')) == True:
+                output = "model successfully trained"
+            send_from_directory(userpath, "final-model.pt")
+        else:
+            output="uploaded file has to have .txt extention"
+        os.remove(os.path.join(userpath,"FlaiNNTrainingScriptNR.py"))
+    return render_template('trainnn.html', outputP=output)
+
 
 
 @app.route('/login', methods = ['POST', 'GET'])
