@@ -81,9 +81,9 @@ def download(filename):
 @app.route('/downloads/<path:filename>', methods=['GET', 'POST'])
 def downloads(filename):
     # Appending app path to upload folder path within app root folder
-    uploads = os.path.join(current_app.root_path)
+    userpath=os.path.join(userdatapath, current_user.username)
     # Returning file from appended path
-    return send_file(os.path.join(os.getcwd(),filename), as_attachment=True)
+    return send_file(os.path.join(userpath,filename), as_attachment=True)
 
 
 @app.route('/gettrainingset/', methods=['GET','POST'])
@@ -123,7 +123,7 @@ def gettrainingset():
             send_from_directory(userpath, "trainnrC1.txt")
         else:
             output="uploaded file has to have .txt extention"
-        os.remove(os.path.join(userpath,"prepareTestSetsComplexUsersNoRepeat.py"))
+        #os.remove(os.path.join(userpath,"prepareTestSetsComplexUsersNoRepeat.py"))
     return render_template('gettrainingset.html', outputP=output)
 
 
@@ -168,8 +168,8 @@ def getchecknn():
                 output = file.read()
         else:
             output="uploaded file has to have .pt extention"
-        os.remove(os.path.join(userpath,file.filename))
-        os.remove(os.path.join(userpath,"FlaiNNTestMultiThreading.py"))            
+        #os.remove(os.path.join(userpath,file.filename))
+        #os.remove(os.path.join(userpath,"FlaiNNTestMultiThreading.py"))            
     return render_template('getchecknn.html', outputP=output)
 
 
@@ -208,7 +208,7 @@ def getusers():
             run_remotely(command)
             with open(os.path.join(userpath,'results.txt'), 'r') as file:
                 output = file.read().replace(".", "\n")
-        os.remove(os.path.join(userpath,"demoForNNFullNN.py"))
+        #os.remove(os.path.join(userpath,"demoForNNFullNN.py"))
     return render_template('getusers.html', inputP=path, outputP=output)
 
 
@@ -234,6 +234,7 @@ def trainnn():
         if file.filename == '':
             output = 'No training set uploaded'
         elif allowed_txt_file(file.filename):
+            path = file.filename
             prepareUsersFiles(file, current_user.username, "FlaiNNTrainingScriptNR.py")
             userpath=os.path.join(userdatapath, current_user.username)
             args.append(os.path.join(userpath,file.filename))
@@ -244,13 +245,15 @@ def trainnn():
             command = "C:/Users/airer/AppData/Local/Programs/Python/Python36/python.exe " + str(os.path.join(userpath,'FlaiNNTrainingScriptNR.py')) + " " + " ".join(args)
             print(command)
             run_remotely(command)
-            if os.path.exists(os.path.join(userpath,"trainedModel",'final-model.pt')) == True:
-                output = "model successfully trained"
-            send_from_directory(userpath, "final-model.pt")
+            while os.path.exists(os.path.join(userpath,"trainedModel",'training.log'))==False:
+                time.sleep(1)
+            with open(os.path.join(userpath,"trainedModel",'training.log'), 'r') as file:
+                output = file.read()
+            #send_from_directory(os.path.join(userpath,"trainedModel"), "final-model.pt")
         else:
             output="uploaded file has to have .txt extention"
-        os.remove(os.path.join(userpath,"FlaiNNTrainingScriptNR.py"))
-    return render_template('trainnn.html', outputP=output)
+        #os.remove(os.path.join(userpath,"FlaiNNTrainingScriptNR.py"))
+    return render_template('trainnn.html', input=path, results=output)
 
 
 
