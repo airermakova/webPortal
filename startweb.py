@@ -73,9 +73,9 @@ def allowed_file(filename):
 @app.route('/uploads/<path:filename>', methods=['GET', 'POST'])
 def download(filename):
     # Appending app path to upload folder path within app root folder
-    uploads = os.path.join(current_app.root_path)
+    userpath=os.path.join(userdatapath, current_user.username)
     # Returning file from appended path
-    return send_from_directory(os.getcwd(), "trainnrC1.txt")
+    return send_from_directory(userpath, "trainnrC1.txt")
 
 
 @app.route('/downloads/<path:filename>', methods=['GET', 'POST'])
