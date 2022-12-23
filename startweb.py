@@ -123,7 +123,7 @@ def gettrainingset():
             send_from_directory(userpath, "trainnrC1.txt")
         else:
             output="uploaded file has to have .txt extention"
-        #os.remove(os.path.join(userpath,"prepareTestSetsComplexUsersNoRepeat.py"))
+        os.remove(os.path.join(userpath,"prepareTestSetsComplexUsersNoRepeat.py"))
     return render_template('gettrainingset.html', outputP=output)
 
 
@@ -168,8 +168,7 @@ def getchecknn():
                 output = file.read()
         else:
             output="uploaded file has to have .pt extention"
-        #os.remove(os.path.join(userpath,file.filename))
-        #os.remove(os.path.join(userpath,"FlaiNNTestMultiThreading.py"))            
+        os.remove(os.path.join(userpath,"FlaiNNTestMultiThreading.py"))            
     return render_template('getchecknn.html', outputP=output)
 
 
@@ -208,7 +207,7 @@ def getusers():
             run_remotely(command)
             with open(os.path.join(userpath,'results.txt'), 'r') as file:
                 output = file.read().replace(".", "\n")
-        #os.remove(os.path.join(userpath,"demoForNNFullNN.py"))
+        os.remove(os.path.join(userpath,"demoForNNFullNN.py"))
     return render_template('getusers.html', inputP=path, outputP=output)
 
 
@@ -252,7 +251,7 @@ def trainnn():
             #send_from_directory(os.path.join(userpath,"trainedModel"), "final-model.pt")
         else:
             output="uploaded file has to have .txt extention"
-        #os.remove(os.path.join(userpath,"FlaiNNTrainingScriptNR.py"))
+        os.remove(os.path.join(userpath,"FlaiNNTrainingScriptNR.py"))
     return render_template('trainnn.html', input=path, results=output)
 
 
