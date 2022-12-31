@@ -1845,3 +1845,1113 @@ Tripropellant rocket
 Tsiolkovsky rocket equation
 Turbomachinery
 Two-stage-to-orbit
+---maths---
+Absolute differential calculus
+Absolute geometry
+Abstract algebra
+Abstract analytic number theory
+Abstract differential geometry
+Abstract harmonic analysis
+Abstract homotopy theory
+Actuarial science
+Additive combinatorics
+Additive number theory
+Affine geometry
+Affine geometry of curves
+Affine differential geometry
+Ahlfors theory
+Algebra
+Algebraic analysis
+Algebraic combinatorics
+Algebraic computation
+Algebraic geometry
+Algebraic graph theory
+Algebraic K-theory
+Algebraic number theory
+Algebraic statistics
+Algebraic topology
+Algorithmic number theory
+Anabelian geometry
+Analysis
+Analytic combinatorics
+Analytic geometry
+Analytic number theory
+Analytic theory of L-functions
+Applied mathematics
+Approximation theory
+Arakelov geometry
+Arakelov theory
+Arithmetic
+Arithmetic algebraic geometry
+Arithmetic combinatorics
+Arithmetic dynamics
+Arithmetic geometry
+Arithmetic topology
+Arithmetical algebraic geometry
+Asymptotic combinatorics
+Asymptotic theory
+Auslander–Reiten theory
+Axiomatic geometry
+Axiomatic set theory
+Bifurcation theory
+Biostatistics
+Birational geometry
+Bolyai–Lobachevskian geometry
+Cartesian geometry
+Calculus
+Calculus of infinitesimals
+Calculus of moving surfaces
+Calculus of variations
+Catastrophe theory
+Categorical logic
+Category theory
+Chaos theory
+Character theory
+Class field theory
+Classical differential geometry
+Classical algebraic topology
+Classical analysis
+Classical analytic number theory
+Classical differential calculus
+Classical Diophantine geometry
+Classical Euclidean geometry
+Classical invariant theory
+Classical mathematics
+Classical projective geometry
+Classical tensor calculus
+Clifford algebra
+Clifford analysis
+Clifford theory
+Cobordism theory
+Coding theory
+Cohomology theory
+Combinatorial analysis
+Combinatorial commutative algebra
+Combinatorial design theory
+Combinatorial game theory
+Combinatorial geometry
+Combinatorial group theory
+Combinatorial mathematics
+Combinatorial number theory
+Combinatorial optimization
+Combinatorial set theory
+Combinatorial theory
+Combinatorial topology
+Combinatorics
+Commutative algebra
+Complex algebraic geometry
+Complex analysis
+Complex analytic dynamics
+Complex analytic geometry
+Complex differential geometry
+Complex dynamics
+Complex geometry
+Complexity theory
+Computable analysis
+Computable model theory
+Computability theory
+Computational algebraic geometry
+Computational complexity theory
+Computational geometry
+Computational group theory
+Computational mathematics
+Computational number theory
+Computational statistics
+Computational synthetic geometry
+Computational topology
+Computer algebra
+Conformal geometry
+Constructive analysis
+Constructive function theory
+Constructive mathematics
+Constructive quantum field theory
+Constructive set theory
+Contact geometry
+Convex analysis
+Convex geometry
+Coordinate geometry
+CR geometry
+Cryptography
+Decision analysis
+Decision theory
+Derived noncommutative algebraic geometry
+Descriptive set theory
+Differential algebraic geometry
+Differential calculus
+Differential Galois theory
+Differential geometry
+Differential geometry of curves
+Differential geometry of surfaces
+Differential topology
+Diffiety theory
+Diophantine geometry
+Discrepancy theory
+Discrete differential geometry
+Discrete exterior calculus
+Discrete geometry
+Discrete mathematics
+Discrete Morse theory
+Distance geometry
+Domain theory
+Donaldson theory
+Dyadic algebra
+Dynamical systems theory
+Econometrics
+Effective descriptive set theory
+Elementary algebra
+Elementary arithmetic
+Elementary mathematics
+Elementary group theory
+Elimination theory
+Elliptic geometry
+Enumerative combinatorics
+Enumerative geometry
+Epidemiology
+Equivariant noncommutative algebraic geometry
+Ergodic Ramsey theory
+Ergodic theory
+Euclidean geometry
+Euclidean differential geometry
+Euler calculus
+Experimental mathematics
+Exterior algebra
+Exterior calculus
+Extraordinary cohomology theory
+Extremal combinatorics
+Extremal graph theory
+F[edit]
+Field theory
+Finite geometry
+Finite model theory
+Finsler geometry
+First order arithmetic
+Fourier analysis
+Fractal geometry
+Fractional calculus
+Fractional dynamics
+Fredholm theory
+Function theory
+Functional analysis
+Functional calculus
+Fuzzy mathematics
+Fuzzy measure theory
+Fuzzy set theory
+Galois cohomology
+Galois theory
+Galois geometry
+Game theory
+Gauge theory
+General topology
+Generalized trigonometry
+Geometric algebra
+Geometric analysis
+Geometric calculus
+Geometric combinatorics
+Geometric function theory
+Geometric invariant theory
+Geometric graph theory
+Geometric group theory
+Geometric measure theory
+Geometric number theory
+Geometric topology
+Geometry
+Geometry of numbers
+Global analysis
+Global arithmetic dynamics
+Graph theory
+Group-character theory
+Group representation theory
+Group theory
+Gyrotrigonometry
+Hard analysis
+Harmonic analysis
+Higher arithmetic
+Higher category theory
+Higher-dimensional algebra
+Hodge theory
+Hodge-Arakelov theory
+Holomorphic functional calculus
+Homological algebra
+Homology theory
+Homotopy theory
+Hyperbolic geometry
+hyperbolic trigonometry
+Hypercomplex analysis
+Hyperfunction theory
+Ideal theory
+Idempotent analysis
+Incidence geometry
+Inconsistent mathematics
+Infinitary combinatorics
+Infinitesimal analysis
+Infinitesimal calculus
+Information geometry
+Integral calculus
+Integral geometry
+Intersection theory
+Intuitionistic type theory
+Invariant theory
+Inventory theory
+Inversive geometry
+Inversive plane geometry
+Inversive ring geometry
+Itô calculus
+Iwasawa theory
+Iwasawa-Tate theory
+K-theory
+K-homology
+Kähler geometry
+KK-theory
+Klein geometry
+Knot theory
+Kummer theory
+L-theory
+Large deviations theory
+Large sample theory
+Lattice theory
+Lie algebra theory
+Lie group theory
+Lie sphere geometry
+Lie theory
+Line geometry
+Linear algebra
+Linear functional analysis
+Linear programming
+List of graphical methods
+Local algebra
+Local class field theory
+Low-dimensional topology
+Malliavin calculus
+Mathematical biology
+Mathematical chemistry
+Mathematical economics
+Mathematical finance
+Mathematical logic
+Mathematical optimization
+Mathematical physics
+Mathematical psychology
+Mathematical sciences
+Mathematical sociology
+Mathematical statistics
+Mathematical system theory
+Matrix algebra
+Matrix calculus
+Matrix theory
+Matroid theory
+Measure theory
+Metric geometry
+Microlocal analysis
+Model theory
+Modern algebra
+Modern algebraic geometry
+Modern invariant theory
+Modular representation theory
+Module theory
+Molecular geometry
+Morse theory
+Motivic cohomology
+Multilinear algebra
+Multiplicative number theory
+Multivariable calculus
+Neutral geometry
+Nevanlinna theory
+Nielsen theory
+Non-abelian class field theory
+Non-classical analysis
+Non-Euclidean geometry
+Non-standard analysis
+Non-standard calculus
+Nonarchimedean dynamics
+Noncommutative algebra
+Noncommutative algebraic geometry
+Noncommutative geometry
+Noncommutative harmonic analysis
+Noncommutative topology
+Nonlinear analysis
+Nonlinear functional analysis
+Number theory
+Numerical analysis
+Numerical linear algebra
+Operad theory
+Operation research
+Operator K-theory
+Operator theory
+Optimal control theory
+Optimal maintenance
+Orbifold theory
+Order theory
+Ordered geometry
+Oscillation theory
+p-adic analysis
+p-adic dynamics
+p-adic Hodge theory
+Parabolic geometry
+Paraconsistent mathematics
+Partition theory
+Perturbation theory
+Picard–Vessiot theory
+Plane geometry
+Point-set topology
+Pointless topology
+Poisson geometry
+Polyhedral combinatorics
+Possibility theory
+Potential theory
+Precalculus
+Predicative mathematics
+Probability theory
+Probabilistic combinatorics
+Probabilistic graph theory
+Probabilistic number theory
+Projective geometry
+Projective differential geometry
+Proof theory
+Pseudo-Riemannian geometry
+Pure mathematics
+Quantum calculus
+Quantum geometry
+Quaternionic analysis
+Ramsey theory
+Rational geometry
+Real algebra
+Real algebraic geometry
+Real analysis
+Real K-theory
+Recreational mathematics
+Recursion theory
+Representation theory
+Representation theory of groups
+Representation theory of the Galilean group
+Representation theory of the Lorentz group
+Representation theory of the Poincaré group
+Representation theory of the symmetric group
+Ribbon theory
+Ricci calculus
+Ring theory
+Riemannian geometry
+Rough set theory
+Sampling theory
+Scheme theory
+the study of schemes introduced by Alexander Grothendieck. It allows the use of sheaf theory to study algebraic varieties and is considered the central part of modern algebraic geometry.
+Secondary calculus
+Semialgebraic geometry
+a part of algebraic geometry; more specifically a branch of real algebraic geometry that studies semialgebraic sets.
+Set-theoretic topology
+Set theory
+Sheaf theory
+The study of sheaves, which connect local and global properties of geometric objects.[16]
+Sheaf cohomology
+Sieve theory
+Single operator theory
+deals with the properties and classifications of single operators.
+Singularity theory
+a branch, notably of geometry; that studies the failure of manifold structure.
+Smooth infinitesimal analysis
+a rigorous reformation of infinitesimal calculus employing methods of category theory. As a theory, it is a subset of synthetic differential geometry.
+Solid geometry
+Spatial geometry
+Spectral geometry
+Spectral graph theory
+Spectral theory
+Spectral theory of ordinary differential equations
+Spectrum continuation analysis
+Spherical geometry
+Spherical trigonometry
+Statistical mechanics
+Statistical modelling
+Statistical theory
+Statistics
+Steganography
+Stochastic calculus
+Stochastic calculus of variations
+Stochastic geometry
+Stochastic process
+Stratified Morse theory
+Super linear algebra
+Surgery theory
+Survey sampling
+Survey methodology
+Symbolic computation
+Symbolic dynamics
+Symplectic geometry
+Symplectic topology
+Synthetic differential geometry
+Synthetic geometry
+Systolic geometry
+Systolic hyperbolic geometry
+Tensor algebra, Tensor analysis, Tensor calculus, Tensor theory
+the study and use of tensors, which are generalizations of vectors. A tensor algebra is also an algebraic structure that is used in the formal definition of tensors.
+Tessellation
+when periodic tiling has a repeating pattern.
+Theoretical physics
+a branch primarily of the science physics that uses mathematical models and abstraction of physics to rationalize and predict phenomena.
+Theory of computation
+Time-scale calculus
+Topology
+Topological combinatorics
+the application of methods from algebraic topology to solve problems in combinatorics.
+Topological degree theory
+Topological graph theory
+Topological K-theory
+Topos theory
+Toric geometry
+Transcendental number theory
+Transformation geometry
+Trigonometry
+Tropical analysis
+Tropical geometry
+Twisted K-theory
+Uncertainty theory
+Universal algebra
+Universal hyperbolic trigonometry
+Valuation theory
+Variational analysis
+Vector analysis
+Vector calculus
+Wavelets
+Lists of mathematics topics
+Outline of mathematics
+Category:Glossaries of mathematics
+---physics---
+ab initio
+Abbe number
+absolute electrode potential
+absolute humidity
+absolute motion
+absolute pressure
+absolute scale
+absolute zero
+absorption spectroscopy
+absorptivity
+accelerating expansion of the universe
+acceleration
+acceleration due to gravity
+accelerometer
+acoustics
+adhesion
+adiabatic cooling
+adiabatic heating
+adiabatic process
+aerodynamics
+afocal system
+air mass
+air mass coefficient
+albedo
+alloy
+alpha decay
+alpha particle (α)
+alternating current (AC)
+ammeter
+amorphous solid
+ampere (A)
+amplifier
+amplitude
+angle of incidence
+angle of reflection
+ångström (Å)
+angular acceleration
+angular displacement
+angular frequency (ω)
+angular momentum
+angular velocity (ω)
+anion
+annihilation
+anode
+anti-gravity
+antimatter
+antineutron
+antiparticle
+antiproton
+antiquark
+arc length
+Archimedes' principle
+area moment of inertia
+astrophysics
+attenuation coefficient
+atom
+atomic line filter
+atomic mass
+atomic mass unit
+atomic number (Z)
+atomic orbital
+atomic packing factor
+atomic physics
+atomic structure
+atomic weight (A)
+audio frequency
+Avogadro constant
+Avogadro number
+Avogadro's law
+axion
+azimuthal quantum number
+Babinet's principle
+background radiation
+ballistics
+Balmer series
+barometer
+baryon
+battery
+beam
+bending
+bending moment
+Bernoulli equation
+Bernoulli's principle
+Bessel function
+beta decay
+beta particle
+Big Bang
+binding energy
+binomial random variable
+biocatalysis
+biophysics
+black body
+black-body radiation
+block and tackle
+Bohr model
+boiling point
+boiling point elevation
+Boltzmann constant
+Bose–Einstein condensate (BEC)
+boson
+Boyle's law
+Bra–ket notation
+Bragg's law
+bremsstrahlung
+Brewster's angle
+british thermal unit (btu)
+brittleness
+Brownian motion
+Bulk modulus
+buoyancy
+calculus
+capacitance
+capacitive reactance
+capacitor
+Carnot cycle
+Cartesian coordinate system
+cathode
+cathode ray
+cation
+celestial mechanics
+Celsius scale
+center of curvature
+center of gravity
+center of mass
+center of pressure
+centigrade
+central-force problem
+centrifugal force
+centripetal force
+cGh physics
+chain reaction
+change of base rule
+charge carrier
+chemical physics
+chromatic aberration
+circular motion
+classical mechanics
+coefficient of friction
+coherence
+cohesion
+cold fusion
+complex harmonic motion
+composite particle
+Compton scattering
+concave lens
+condensation point
+condensed matter physics
+conservation of momentum
+conservation law
+constructive interference
+continuous spectrum
+continuum mechanics
+convection
+convex lens
+Coulomb's law
+converging lens
+cosmic background radiation
+creep
+crest
+crest factor
+critical angle
+critical mass
+cube of theoretical physics
+Curie temperature
+current density
+curvilinear motion
+cyclotron
+Dalton's law
+damped vibration
+Damping ratio
+Darcy–Weisbach equation
+dark energy
+dark matter
+DC motor
+decibel
+definite integral
+deflection
+deformation
+density
+derivative
+destructive interference
+diamagnetism
+dielectric
+diffraction
+direct current (DC)
+dispersion
+displacement
+distance
+drift velocity
+Doppler effect
+drag
+ductility
+dynamics
+econophysics
+elastic collision
+elastic energy
+elastic instability
+elastic modulus
+elasticity
+electric charge
+electric circuit
+electric current
+electric displacement field
+electric field
+electric field gradient
+electric field intensity
+electric generator
+electric motor
+electric potential
+electric power
+electrical conductor
+electrical insulator
+electrical potential energy
+electrical and electronics engineering
+electrical network
+electrical resistance
+electricity
+electro-optic effect
+electrochemical cell
+electrodynamics
+electrolytic cell
+electromagnet
+electromagnetic field
+electromagnetic induction
+electromagnetic radiation
+electromagnetic spectrum
+electromagnetic wave equation
+electromagnetism
+electromechanics
+electromotive force ()
+electron
+electron capture
+electron cloud
+electron pair
+electron paramagnetic resonance
+electronvolt (eV)
+electronegativity
+electronics
+electrostatics
+electrostriction
+elementary charge
+elementary particle
+emission spectrum
+emissivity
+energy
+energy level
+endothermic
+engineering physics
+enthalpy
+entropy
+equilibrant force
+equipartition
+escape velocity
+excited state
+exothermic
+experimental physics
+farad
+falling bodies
+faraday
+Faraday constant
+Fermat's principle
+Fermi surface
+fermion
+ferrimagnetism
+ferromagnetism
+field line
+first law of thermodynamics
+fission
+flavour
+fluid
+fluid mechanics
+fluid physics
+fluid statics
+fluorescence
+flux
+flux density
+focal length
+focus
+force (F)
+force carrier
+frame of reference
+Fraunhofer lines
+free body diagram
+frequency
+frequency modulation
+free fall
+freezing point
+friction
+function
+fundamental forces
+fundamental frequency
+fundamental theorem of calculus
+fusion
+gamma ray
+A form of electromagnetic radiation of very high frequency and therefore very high energy.
+gas
+general relativity
+geophysics
+gluon
+Graham's law of diffusion
+gravitation
+gravitational constant (G)
+gravitational energy
+gravitational field
+gravitational potential
+gravitational wave
+graviton
+gravity
+ground
+ground reaction force
+ground state
+group velocity
+hadron
+A composite particle made from three quarks or three antiquarks baryon, or one quark and one antiquark meson.
+half-life
+Hamilton's principle
+Hamiltonian mechanics
+harmonic mean
+heat
+heat transfer
+Helmholtz free energy
+hertz
+Higgs boson
+homeokinetics
+horsepower (hp)
+Huygens–Fresnel principle
+hydrostatics
+ice point
+impedance
+indefinite integral
+inductance
+infrasound
+inertia
+inductive reactance
+integral
+integral transform
+International System of Units (SI)
+invariant mass
+ion
+ionic bond
+ionization
+ionization chamber
+ionizing radiation
+isotope
+Josephson effect
+joule
+Kelvin
+kinematics
+kinetic energy
+Kirchhoff's circuit laws
+Kirchhoff's equations
+Lagrangian mechanics
+laminar flow
+Laplace transform
+Laplace–Runge–Lenz vector
+laser
+law of universal gravitation
+LC circuit
+Lenz's law
+lepton
+lever
+light
+linear actuator
+linear algebra
+line of force
+linear elasticity
+Liouville's theorem
+liquid
+liquid crystal (LC)
+longitudinal wave
+M-theory
+Mach number
+Mach's principle
+machine
+machine element
+Maclaurin series
+magnetic field
+magnetism
+magnetostatics
+mass
+mass balance
+mass density
+mass flux
+mass moment of inertia
+mass number
+mass spectrometry
+material properties
+materials science
+mathematical physics
+mathematics
+matrix
+matter
+Maxwell's equations
+measure of central tendency
+mechanical energy
+mechanical filter
+mechanical equilibrium
+mechanical wave
+mechanics
+melting
+meson
+modulus of elasticity
+molar concentration
+molar mass
+molecule
+molecular physics
+moment
+moment of inertia
+monochromatic light
+motion
+muon
+nanoengineering
+nanotechnology
+Navier–Stokes equations
+neurophysics
+neutrino
+neutron
+neutron cross-section
+newton (N)
+Newton's laws of motion
+Newton's law of universal gravitation
+Newtonian fluid
+Newtonian mechanics
+normal force
+nuclear force
+nuclear physics
+nuclear reaction
+nuclear transmutation
+nucleon
+nucleus
+nuclide
+Ohm
+Ohm's law
+optical tweezers
+optically detected magnetic resonance
+optics
+paraffin
+parallel circuit
+parity
+particle
+particle accelerator
+particle displacement
+particle physics
+Pascal's law
+Pauli exclusion principle
+pendulum
+periodic table of the elements
+phase (matter)
+phase (waves)
+phase equilibrium
+phenomenology
+phosphorescence
+photoelectric effect
+photon
+photonics
+physical chemistry
+physical constant
+physical quantity
+physics
+piezoelectricity
+pion
+Planck constant ()
+Planck units
+Planck's law
+plasma
+plasma physics
+plasticity
+pneumatics
+positron
+potential energy
+power
+pressure
+principle of relativity
+probability
+probability distribution
+probability theory
+proton
+psi particle
+pulley
+pulse
+pulse wave
+quantization
+quantum
+quantum chromodynamics
+quantum electrodynamics (QED)
+quantum field theory
+quantum gravity
+quantum mechanics
+quantum number
+quantum physics
+quantum state
+quark
+quasiparticle
+radiant energy
+radiation
+radioactive decay
+radionuclide
+radius of curvature
+redshift
+refraction
+refractive index
+relative atomic mass
+relativistic mechanics
+relativity
+rest frame
+rigid body
+rotational energy
+rotational speed
+Rydberg formula
+scalar
+Any simple physical quantity that can be described by a single number (as opposed to vectors, tensors, etc., which are described by several numbers such as magnitude and direction) and is unchanged by coordinate system rotations or translations (in Newtonian mechanics) or by Lorentz transformations or central-time translations (in relativity).
+scattering
+The general physical process by which some forms of radiation, such as light, sound, or moving particles, are forced to deviate from a straight trajectory by one or more localised non-uniformities in the medium through which they pass.
+science
+A systematic enterprise that builds and organises knowledge in the form of testable explanations and predictions about the universe.
+screw
+A mechanism that converts rotational motion to linear motion, and a torque (rotational force) to a linear force; one of six classical simple machines.
+second law of thermodynamics
+Seebeck effect
+series circuit
+shadow matter
+shear modulus
+shear strength
+shear stress
+shortwave radiation (SW)
+Schrödinger equation
+simple harmonic motion
+simple machine
+siphon
+Snell's law
+solar cell
+solid
+solid mechanics
+solid-state physics
+solubility
+sound
+special relativity
+specific activity
+speed
+speed of light ()
+speed of sound
+spherical aberration
+spin quantum number
+stable isotope ratio
+stable nuclide
+standard atomic weight
+Standard Model
+standing wave
+state of matter
+statics
+statistical mechanics
+stiffness
+strain
+strain hardening
+strength of materials
+stress
+stress–strain curve
+string duality
+string theory
+structural load
+subatomic particle
+sublimation
+superconductivity
+superconductor
+superhard material
+superposition principle
+supersymmetry (SUSY)
+surface tension
+temperature
+tensile modulus
+tensile strength
+tesla (T)
+test particle
+theoretical physics
+theory of everything (ToE)
+theory of relativity
+thermal conduction
+thermal equilibrium
+thermal radiation
+thermionic emission
+thermodynamic equilibrium
+thermodynamic free energy
+thermodynamics
+thermometer
+third law of thermodynamics
+torque
+total internal reflection
+toughness
+trajectory
+transducer
+transmission medium
+transverse wave
+trigonometry
+trimean
+triple point
+truncated mean
+uncertainty principle
+uniform motion
+uniform circular motion
+unit vector
+utility frequency
+vacuum
+valence electron
+valence shell
+valley of stability
+Van de Graaff generator
+variable capacitor
+variable resistor
+vector
+vector space
+velocity ()
+virtual image
+virtual particle
+viscoelasticity
+viscosity
+visible light
+volt (V)
+Volta potential
+voltage
+voltmeter
+volt per meter
+volume
+W and Z bosons
+watt (W)
+wave
+wave equation
+wave function
+wave function collapse
+wave-particle duality
+wavelength
+weak interaction
+weber (Wb)
+wedge
+weight
+wheel and axle
+white body
+wind
+work
+work function
+X-ray
+Young’s modulus
+Zeeman effect
