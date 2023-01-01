@@ -2774,7 +2774,7 @@ physical quantity
 physics
 piezoelectricity
 pion
-Planck constant ()
+Planck constant
 Planck units
 Planck's law
 plasma
@@ -2797,7 +2797,8 @@ pulse wave
 quantization
 quantum
 quantum chromodynamics
-quantum electrodynamics (QED)
+quantum electrodynamics
+QED
 quantum field theory
 quantum gravity
 quantum mechanics
@@ -2822,22 +2823,16 @@ rigid body
 rotational energy
 rotational speed
 Rydberg formula
-scalar
-Any simple physical quantity that can be described by a single number (as opposed to vectors, tensors, etc., which are described by several numbers such as magnitude and direction) and is unchanged by coordinate system rotations or translations (in Newtonian mechanics) or by Lorentz transformations or central-time translations (in relativity).
-scattering
-The general physical process by which some forms of radiation, such as light, sound, or moving particles, are forced to deviate from a straight trajectory by one or more localised non-uniformities in the medium through which they pass.
 science
-A systematic enterprise that builds and organises knowledge in the form of testable explanations and predictions about the universe.
 screw
-A mechanism that converts rotational motion to linear motion, and a torque (rotational force) to a linear force; one of six classical simple machines.
-second law of thermodynamics
 Seebeck effect
 series circuit
 shadow matter
 shear modulus
 shear strength
 shear stress
-shortwave radiation (SW)
+shortwave radiation
+SW
 Schrödinger equation
 simple harmonic motion
 simple machine
@@ -2869,7 +2864,7 @@ strain
 strain hardening
 strength of materials
 stress
-stress–strain curve
+stress-strain curve
 string duality
 string theory
 structural load
