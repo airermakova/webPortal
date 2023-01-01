@@ -14,6 +14,7 @@ import time
 testmodelpath=os.path.join(os.getcwd(),"testmodel")
 userdatapath=os.path.join(os.getcwd(),"userdata")
 
+
 app = Flask(__name__)
 app.secret_key = 'xyz' 
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///data.db'
@@ -45,6 +46,8 @@ def prepareUsersFiles(file, username, pyscriptname):
          shutil.copyfile(pyscriptname, os.path.join(userpath, pyscriptname))
     if(os.path.exists(os.path.join(userpath, "usersList.txt"))==False):
         shutil.copyfile(os.path.join(testmodelpath, "usersList.txt"), os.path.join(userpath, "usersList.txt"))
+    if(os.path.exists(os.path.join(userpath, "techList.txt"))==False):
+        shutil.copyfile(os.path.join(testmodelpath, "techList.txt"), os.path.join(userpath, "techList.txt"))
     if(file is not None):
         file.save(os.path.join(userpath,file.filename))
 
@@ -75,7 +78,7 @@ def download(filename):
     # Appending app path to upload folder path within app root folder
     userpath=os.path.join(userdatapath, current_user.username)
     # Returning file from appended path
-    return send_from_directory(userpath, "trainnrC1.txt")
+    return send_from_directory(userpath, filename)
 
 
 @app.route('/downloads/<path:filename>', methods=['GET', 'POST'])
@@ -125,6 +128,48 @@ def gettrainingset():
             output="uploaded file has to have .txt extention"
         os.remove(os.path.join(userpath,"prepareTestSetsComplexUsersNoRepeat.py"))
     return render_template('gettrainingset.html', outputP=output)
+
+
+
+@app.route('/gettechtrainingset/', methods=['GET','POST'])
+def gettechtrainingset():
+    path=""
+    output=""
+    args = []
+    if request.method == "POST":
+        print("POST")
+        #phrases number area
+        inputN = request.form.get('inputN')
+        num = request.form['inputN']
+        inputN = request.form.get('inputF')
+        st = request.form['inputF']
+        if num == None or num=="":
+             num = "0"
+        if st == None or st=="":
+             st = "0"
+        print(num + "..." + st)
+        #file uploading area
+        file = request.files['file']
+        if file.filename == '':
+            output = 'No text file selected'
+        elif allowed_txt_file(file.filename):
+            prepareUsersFiles(file, current_user.username, "prepareTestSetsComplexTechNoRepeat.py")
+            userpath=os.path.join(userdatapath, current_user.username)
+            args.append(os.path.join(userpath,file.filename))
+            args.append(st)
+            args.append(num)
+            args.append(userpath)
+            command = "C:/Users/airer/AppData/Local/Programs/Python/Python36/python.exe " + str(os.path.join(userpath,'prepareTestSetsComplexTechNoRepeat.py')) + " " + " ".join(args)
+            print(command)
+            run_remotely(command)
+            with open(os.path.join(userpath,'onlyDetectedTechsNR1.txt'), 'r') as file:
+                output = file.read()
+            print(os.path.join(userpath,"trainthC1.txt"))
+            send_from_directory(userpath, "trainthC1.txt")
+        else:
+            output="uploaded file has to have .txt extention"
+        os.remove(os.path.join(userpath,"prepareTestSetsComplexTechNoRepeat.py"))
+    return render_template('gettechtrainingset.html', outputP=output)
 
 
 @app.route('/getchecknn/', methods=['GET','POST'])
