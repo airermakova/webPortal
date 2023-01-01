@@ -14,8 +14,10 @@
         </h1>
         <strong><nav>
           <ul class="menu">
-            <li><a href="{{ url_for('gettrainingset') }}"> Prepare training set </a></li>
-            <li><a href="{{ url_for('getusers') }}"> Get users from patent </a></li>
+            <li><a href="{{ url_for('gettrainingset') }}"> Prepare training set to detect users </a></li>
+            <li><a href="{{ url_for('gettechtrainingset') }}"> Prepare training set to detect technologies </a></li>
+            <li><a href="{{ url_for('getusers') }}"> Get users and technologies from patent </a></li>
+            <li><a href="{{ url_for('trainnn') }}"> Train your neural network </a></li>
             <li><a href="{{ url_for('getchecknn') }}"> Test neural network </a></li>
           </ul>
         </nav></strong>

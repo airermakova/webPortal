@@ -1,0 +1,45 @@
+<html>
+  <head>
+      <div class="container">
+        <h1 class="logo">Prepare training set for neural network</h1>
+      <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+  </head>
+
+  <body>
+   
+  <div class='container'>
+      <h3></h3>
+      <form name="input" enctype=multipart/form-data method="POST">
+         Upload your text file for training, it shall be .txt file
+         <br><br>
+         <input type=file name=file>
+         <br><br>
+         Max epoch to use in training(default vallue is 10)
+         <input type="text" id="input" name="inputME"/>
+         <br><br>
+         Learning rate to use in training(Default value is 0.1)
+         <input type="text" id="input" name="inputLR"/>
+         <br><br>
+         Column name to predict(Default value is NER)
+         <input type="text" id="input" name="inputPred"/>
+         <br><br>
+         <input type=submit value="train NN">
+         <br>
+         <br>
+         <textarea type="text" id="results" name="results" rows="15"> 
+            
+Results: 
+{{results}}     
+         
+      </textarea>
+      <br>
+      <br>
+      <a href="http://127.0.0.1:5000/downloads/trainedModel/final-model.pt">Download trained model</a>
+      </form>
+      <a href="http://127.0.0.1:5000/">Back</a> 
+
+  </div>
+
+</body>
+
+</html>
