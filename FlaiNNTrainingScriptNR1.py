@@ -8,14 +8,9 @@ from flair.datasets import UD_ENGLISH
 import sys
 import os
 import io
-from threading import *
-
 
 valFileNm = "val.txt"
 valFileTs = "tst.txt"
-corpuses = []
-threads = []
-sema = Semaphore(1)
 
 trainset = str(sys.argv[1])
 colName = str(sys.argv[2])
@@ -34,9 +29,6 @@ fileHandle = open(trainset, "r", encoding="utf8")
 texts = fileHandle.readlines()
 fileHandle.close()
 
-print("INPUT READ")
-crpLen = len(texts)
-
 def prepareVal(fileNm, st, fn):
     fileHandle = open(fileNm, "w", encoding="utf8")
     if len(texts)<st or len(texts)<fn:
@@ -48,60 +40,22 @@ def prepareVal(fileNm, st, fn):
     fileHandle.close()
 
 
-def prepareCorp(fileNm, vl, ts, st, div):
-    prepareVal(os.path.join(path, vl), 0, 50)
-    prepareVal(os.path.join(path, ts), 0, 30)
-    stVal = int(st*crpLen/div)
-    Ln = int(crpLen/div)
-    prepareVal(os.path.join(path, fileNm), stVal, Ln)
-    my_corpus: Corpus = ColumnCorpus(data_folder, columns,
-                              train_file=fileNm,
-                              test_file=ts,
-                              dev_file=vl)
-    sema.acquire()
-    corpuses.append(my_corpus)
-    sema.release()
-    threads.pop(0)
-    print("TREAD FINISH")
-    if len(threads)==0:
-        startTraining()
+print("START TO PREPARE VALIDATION")
 
-try:    
-    for cnt in range(0,3):
-        fn = "tr" + str(cnt) + ".txt"
-        vl = "vl" + str(cnt) + ".txt"
-        ts = "ts" + str(cnt) + ".txt"
-        print("create thread")
-        processThread = Thread(target=prepareCorp, args=[fn, vl, ts, cnt, 3])
-        print("thread created")
-        threads.append(processThread)
+prepareVal(os.path.join(path, valFileNm), 0, 50)
+prepareVal(os.path.join(path, valFileTs), 0, 30)
 
-
-    for ph in threads:
-        print("thread to create corpus started")
-        ph.start()
-
-
-    print("START TO PREPARE VALIDATION")
-
-
-except Exception as e:
-    print("EXCEPTION FINISH TRAINING" + str(e))
-    with io.open("training.log",'w',encoding='utf8') as f:
-       f.write("trainig failed")
-
-def startTraining():
- try:
-     print("START TO TRAINING")
+try:
+     print("START TO READ CORPUS")
      #init a corpus using column format, data folder and the names of the train, dev and test files
-     #my_corpus: Corpus = ColumnCorpus(data_folder, columns,
-     #                         train_file=trainset,
-     #                         test_file=valFileTs,
-     #                         dev_file=valFileNm)
+     my_corpus: Corpus = ColumnCorpus(data_folder, columns,
+                              train_file=trainset,
+                              test_file=valFileTs,
+                              dev_file=valFileNm)
 
      #english_corpus = UD_ENGLISH().downsample(0.1)
-     corpus = MultiCorpus([corpuses[0], corpuses[1], corpuses[2]]).downsample(0.1)
-     #corpus = my_corpus
+     #corpus = MultiCorpus([english_corpus , my_corpus]).downsample(0.1)
+     corpus = my_corpus
 
      print("CORPUS READ")
      print(len(corpus.train))
@@ -147,7 +101,7 @@ def startTraining():
               max_epochs=maxEpoch)
      print("FINISH TRAINING")
 
- except Exception as e:
+except:
     print("EXCEPTION FINISH TRAINING")
     with io.open("training.log",'w',encoding='utf8') as f:
        f.write("trainig failed")
