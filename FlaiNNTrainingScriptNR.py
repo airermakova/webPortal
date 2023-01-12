@@ -10,19 +10,19 @@ import os
 import io
 from threading import *
 
-
+valFileTr = "trn.txt"
 valFileNm = "val.txt"
 valFileTs = "tst.txt"
-corpuses = []
-threads = []
-sema = Semaphore(1)
-
+print(sys.argv)
 trainset = str(sys.argv[1])
 colName = str(sys.argv[2])
 maxEpoch = int(sys.argv[3])
 learnRate = float(sys.argv[4])
 path = str(sys.argv[5])
 print("ARGUMENTS READ")
+
+start = 0
+length = 3000
 
 # define columns
 columns = {0: 'text', 1: 'pos', 2: colName}
@@ -34,9 +34,8 @@ fileHandle = open(trainset, "r", encoding="utf8")
 texts = fileHandle.readlines()
 fileHandle.close()
 
-print("INPUT READ")
-crpLen = len(texts)
 
+#prepare validation, test and training sets
 def prepareVal(fileNm, st, fn):
     fileHandle = open(fileNm, "w", encoding="utf8")
     if len(texts)<st or len(texts)<fn:
@@ -47,61 +46,32 @@ def prepareVal(fileNm, st, fn):
             fileHandle.write(texts[i])
     fileHandle.close()
 
+#control if all training set processed
+def trainChecker():
+     start = 0
+     length = 3000
 
-def prepareCorp(fileNm, vl, ts, st, div):
-    prepareVal(os.path.join(path, vl), 0, 50)
-    prepareVal(os.path.join(path, ts), 0, 30)
-    stVal = int(st*crpLen/div)
-    Ln = int(crpLen/div)
-    prepareVal(os.path.join(path, fileNm), stVal, Ln)
-    my_corpus: Corpus = ColumnCorpus(data_folder, columns,
-                              train_file=fileNm,
-                              test_file=ts,
-                              dev_file=vl)
-    sema.acquire()
-    corpuses.append(my_corpus)
-    sema.release()
-    threads.pop(0)
-    print("TREAD FINISH")
-    if len(threads)==0:
-        startTraining()
-
-try:    
-    for cnt in range(0,3):
-        fn = "tr" + str(cnt) + ".txt"
-        vl = "vl" + str(cnt) + ".txt"
-        ts = "ts" + str(cnt) + ".txt"
-        print("create thread")
-        processThread = Thread(target=prepareCorp, args=[fn, vl, ts, cnt, 3])
-        print("thread created")
-        threads.append(processThread)
+     while((start+length)<len(texts)):
+         train()
+         start = start + length
+     print("FINISH TRAINING")
 
 
-    for ph in threads:
-        print("thread to create corpus started")
-        ph.start()
+#training neural network function
+def train():
+     prepareVal(os.path.join(path, valFileTr), start*length, length)
+     print("START TO READ CORPUS")
 
-
-    print("START TO PREPARE VALIDATION")
-
-
-except Exception as e:
-    print("EXCEPTION FINISH TRAINING" + str(e))
-    with io.open("training.log",'w',encoding='utf8') as f:
-       f.write("trainig failed")
-
-def startTraining():
- try:
-     print("START TO TRAINING")
      #init a corpus using column format, data folder and the names of the train, dev and test files
-     #my_corpus: Corpus = ColumnCorpus(data_folder, columns,
-     #                         train_file=trainset,
-     #                         test_file=valFileTs,
-     #                         dev_file=valFileNm)
+     my_corpus: Corpus = ColumnCorpus(data_folder, columns,
+                              train_file=valFileTr,
+                              test_file=valFileTs,
+                              dev_file=valFileNm,
+                              in_memory=False)
 
      #english_corpus = UD_ENGLISH().downsample(0.1)
-     corpus = MultiCorpus([corpuses[0], corpuses[1], corpuses[2]]).downsample(0.1)
-     #corpus = my_corpus
+     #corpus = MultiCorpus([english_corpus , my_corpus]).downsample(0.1)
+     corpus = my_corpus
 
      print("CORPUS READ")
      print(len(corpus.train))
@@ -138,16 +108,37 @@ def startTraining():
      # 6. initialize trainer
      trainer = ModelTrainer(tagger, corpus)
 
-     # 7. start training
-     trainer.train(os.path.join(path,"trainedModel"),
+     # 7. check if another trained model exists
+     pt = os.path.join(data_folder, "trainedModel", "final-model.pt")
+     if(os.path.exists(pt)):
+        # 8. resume training
+        trained_model = SequenceTagger.load(pt)
+        trainer.resume(trained_model,
+              base_path=os.path.join(path,"trainedModel"),
+              mini_batch_size=32,
+              mini_batch_chunk_size=2,
+              embeddings_storage_mode='cpu',
+              max_epochs=maxEpoch
+               )
+     else:
+         # 9. start training
+         trainer.train(os.path.join(path,"trainedModel"),
               learning_rate=learnRate,
               mini_batch_size=32,
               mini_batch_chunk_size=2,
               embeddings_storage_mode='cpu',
               max_epochs=maxEpoch)
-     print("FINISH TRAINING")
+         print("FINISH TRAINING STAGE")
 
- except Exception as e:
-    print("EXCEPTION FINISH TRAINING")
+
+try:
+
+     prepareVal(os.path.join(path, valFileNm), 0, 500)
+     prepareVal(os.path.join(path, valFileTs), 300, 600)
+     mainThread = Thread(target=trainChecker)     
+     mainThread.start()
+
+except Exception as e:
+    print("EXCEPTION FINISH TRAINING" + str(e))
     with io.open("training.log",'w',encoding='utf8') as f:
        f.write("trainig failed")
