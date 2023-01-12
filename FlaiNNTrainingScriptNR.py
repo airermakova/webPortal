@@ -42,6 +42,7 @@ def prepareVal(fileNm, st, fn):
         for i in texts: 
             fileHandle.write(i)
     elif len(texts)>fn:
+        print(texts[st])
         for i in range(st,fn+st):
             fileHandle.write(texts[i])
     fileHandle.close()
@@ -49,9 +50,10 @@ def prepareVal(fileNm, st, fn):
 #control if all training set processed
 def trainChecker():
      start = 0
-     length = 3000
+     length = 50000
 
      while((start+length)<len(texts)):
+         print("START STAGE TRAINING")
          train()
          start = start + length
      print("FINISH TRAINING")
@@ -59,7 +61,7 @@ def trainChecker():
 
 #training neural network function
 def train():
-     prepareVal(os.path.join(path, valFileTr), start*length, length)
+     prepareVal(os.path.join(path, valFileTr), start, length)
      print("START TO READ CORPUS")
 
      #init a corpus using column format, data folder and the names of the train, dev and test files
