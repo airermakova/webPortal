@@ -54,13 +54,13 @@ def trainChecker():
 
      while((start+length)<len(texts)):
          print("START STAGE TRAINING")
-         train()
+         train(start, length)
          start = start + length
      print("FINISH TRAINING")
 
 
 #training neural network function
-def train():
+def train(start, length):
      prepareVal(os.path.join(path, valFileTr), start, length)
      print("START TO READ CORPUS")
 
