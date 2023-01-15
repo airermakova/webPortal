@@ -29,6 +29,8 @@ from nltk.stem.snowball import SnowballStemmer
 from nltk.corpus import words
 from nltk.corpus import conll2000, conll2002
 
+
+
 phrases = []
 fphrases = []
 users = []
@@ -41,14 +43,17 @@ sema = Semaphore(1)
 priorPosList=["NN","JJ"]
 lastPosList=["NN","RB","DT"]
 
-markedPhrasesFileName = "markedPhrasesFullNN.txt"
-model = SequenceTagger.load(os.getcwd() + "/trainerNRFinal10Rep/final-model.pt")
-if model is not None:
-    print("MODEL LOADED")
+path = str(sys.argv[1])
+fname = str(sys.argv[2])
+
+pt = os.path.join(path,"model.pt")
+print(pt)
+
+
 #TO GET PHRASES
 def getPhrasesFromFile(phr):
     phrases= []  
-    finArr = []  
+    finArr = []
     tokenized_phrases = []
     try:
        phrases = phr.split(".")
@@ -122,24 +127,41 @@ def writeUsers():
                 print("user - " + us)
                 f.write(us+".")
         f.close()
+        if os.path.exists(pt):
+            os.remove(pt)
         print("STATISTICS WRITTEN ")
+
     
+if os.path.exists(os.path.join(path, "results.txt"))==True:
+    f = open(os.path.join(path, "results.txt"),"w")
+    f.close()
 
-text = str(sys.argv[1])
-path = str(sys.argv[2])
-textdata = text.replace("_", " ")
-print("INPUT TEXT " + textdata)
+if fname!=None:
+    word_file = open (os.path.join(path, fname), "r", encoding='utf-8')
+    for l in word_file:
+           phrases.append(l.replace('\r', '').replace('\n', ''))
 
-phrases = getPhrasesFromFile(textdata)
-print("Taken phrases - " + str(len(phrases)))
-print(phrases)
+try:
+    model = None
+    if os.path.exists(os.path.join(path, "model.pt")):
+        model = SequenceTagger.load(os.path.join(path, "model.pt"))
+    else:
+        model = SequenceTagger.load(pt)
+    if model is not None:
+        print("MODEL LOADED")      
 
-threads = []
-for cnt in range(0,10):
-    threads.append(Thread(target=writeUsers))
+    threads = []
+    for cnt in range(0,10):
+        threads.append(Thread(target=writeUsers))
 
 
-for ph in threads:
-    print("thread start")
-    ph.start()
+    for ph in threads:
+        print("thread start")
+        ph.start()
+
+except Exception as e:
+    print("Raised exception: " + str(e))
+    f = open(os.path.join(path, "results.txt"),"w")
+    f.write("Failed to get users")
+    f.close()
 
