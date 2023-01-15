@@ -129,6 +129,8 @@ def writeUsers():
         f.close()
         if os.path.exists(pt):
             os.remove(pt)
+        if os.path.exists(os.path.join(path, fname)):
+            os.remove(os.path.join(path, fname))
         print("STATISTICS WRITTEN ")
 
     
