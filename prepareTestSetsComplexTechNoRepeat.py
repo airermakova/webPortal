@@ -11,6 +11,7 @@ import nltk
 import numpy
 import random
 import codecs
+import shutil
 from threading import *
 from langdetect import detect
 nltk.download('punkt')
@@ -27,6 +28,13 @@ from pprint import pprint
 from nltk.stem.snowball import SnowballStemmer
 from nltk.corpus import words
 from nltk.corpus import conll2000, conll2002
+from nltk import sent_tokenize
+from translate import Translator
+from langdetect import detect
+from googletrans import Translator, constants
+from pprint import pprint
+
+
 
 trainSet = []
 techs = []
@@ -53,8 +61,9 @@ def getPhrasesFromFile(fileName, st, fin):
        for i in range(st,fin):
            finArr.append(phrases[i])
        return finArr
-    except:
+    except Exception as e:
       print("Error in reading " + fileName)
+      writeException(e)
       exit()
 
 
@@ -92,37 +101,8 @@ def getWordsFromGoldenSet(fileName):
       print("Error in reading " + fileName)
       if len(users)>0:
           print(users[len(users)-1])
+      
       exit()
-
-
-dataFileName = str(sys.argv[1])
-print(dataFileName)
-phSt = int(sys.argv[2])
-print(phSt)
-phNum = int(sys.argv[3])
-print(phNum)
-path = str(sys.argv[4])
-print(path)
-trName = str(os.path.join(path,"trainthC1.txt"))
-vName = str(os.path.join(path,"valthC1.txt"))
-teName = str(os.path.join(path,"testthC1.txt"))
-tr = open(trName, "w")
-v = open(vName, "w")
-te = open(teName, "w")
-tr.close()
-v.close()
-te.close()
-
-
-#TO GET DATA FROM TEST FILE AND USERS FILE
-testmodelpath= os.path.join(os.getcwd(),"trainmodel")
-trainSet = getPhrasesFromFile(dataFileName, phSt, phNum)
-print("Taken phrases - " + str(trainSet))
-techs = getDataFromFile(os.path.join(testmodelpath,"techList.txt"))
-print("Taken users - " + str(len(techs)))
-#goldsets = getWordsFromGoldenSet("GoldenSet.txt")
-#print("Taken goldsets - ")
-#print(len(goldsets))
 
 
 def checkMarkedArrayPresence(phr):
@@ -131,21 +111,25 @@ def checkMarkedArrayPresence(phr):
         nltk_tags = pos_tag(word_tokenize(phrase))  
         iob_tagged = tree2conlltags(nltk_tags) 
         userFound = False
-        for user in techs:  
-            us = []      
-            if user in phrase:    
+        for user in techs: 
+            us = []
+            #user = getUserInPatentLanguage(phrase, oneuser)  
+            if user in phrase: 
+               print(user)   
                if " " in user:                    
                    us = user.split(" ")
                else:
+                   print(user)
                    us.append(user)               
-               iob_tagged = markUser(iob_tagged, us)                     
+                   iob_tagged = markUser(iob_tagged, us)
+                   print(iob_tagged)                     
         regStr = ""
         newLen = 0
         allowAppend = False         
         for iob in iob_tagged:
-             if iob[2]=="B" :
+             if iob[2]=="B-label" :
                  regStr = iob[0]             
-             if iob[2]=="I":
+             if iob[2]=="I-label":
                  regStr += " " + iob[0]
              if iob[2]=="O" and len(regStr)>0:
                  registeredUser.append(regStr)
@@ -175,8 +159,23 @@ def checkMarkedArrayPresence(phr):
                 onlyUsers.append(iob_tagged)
                 print(iob_tagged)
     return onlyUsers
-         
 
+         
+def getUserInPatentLanguage(trainSet):
+    sent = ""
+    usr = ""
+    translator = Translator()
+    try:
+        for ph in trainSet:
+            langCode = detect(ph)
+            if langCode != "en":
+                translated_text = translator.translate(ph,src=langCode, dest="en")
+                trainSet.append(translated_text.text)  
+                print(translated_text.text)     
+    except Exception as e:
+       print("Failed to translate non English patents " + str(e))
+    
+        
        
 def markUser(phrase,user):
   try:
@@ -187,7 +186,12 @@ def markUser(phrase,user):
        cnt = 0
        ucnt = 0
        for ph in phrase:
-           finTuple.append(ph)
+           ls = list(ph)
+           if ls[2] == "B":
+               ls[2] = "B-label"
+           if ls[2] == "I":
+               ls[2] = "I-label"
+           finTuple.append(tuple(ls))
            ucnt = ucnt +1
            found = False
            for u in user: 
@@ -199,40 +203,43 @@ def markUser(phrase,user):
                cnt = cnt - 1           
            if cnt == len(user)-1:             
                ls = list(phrase[ucnt-cnt-1])
-               ls[2]="B"
+               ls[2]="B-label"
                finTuple[ucnt-cnt-1]=tuple(ls)
                for i in range(cnt):
                    ls = list(phrase[ucnt-cnt+i])
-                   ls[2]="I"
+                   ls[2]="I-label"
                    finTuple[ucnt-cnt+i]=tuple(ls)
                cnt = 0
     else:
         for i in range(0, len(phrase)):
-           finTuple.append(phrase[i])         
+           ls = list(phrase[i])
+           if ls[2] == "B":
+               ls[2] = "B-label"
+           if ls[2] == "I":
+               ls[2] = "I-label"
+           finTuple.append(tuple(ls))         
            if phrase[i][0] == user[0] and phrase[i][1][0]=="N":  
                cnt = i-1
                found = False
                while cnt>=0 and phrase[cnt][1]=="JJ" or cnt>=0 and phrase[cnt][1]=="NNP" or cnt>=0 and phrase[cnt][1]=="VBN":
                    ls = list(phrase[cnt])
-                   ls[2]="I"
+                   ls[2]="I-label"
                    finTuple[cnt] = (tuple(ls))
                    cnt = cnt - 1 
                    found = True
-
                ls = list(phrase[i])
                if found == False:
-                   ls[2]="B"
+                   ls[2]="B-label"
                else:
-                   ls[2]="I"
+                   ls[2]="I-label"
                finTuple[len(finTuple)-1] = (tuple(ls))
                if found == True:
                    ls = list(phrase[cnt+1])
-                   ls[2]="B"
+                   ls[2]="B-label"
                    finTuple[cnt+1] = (tuple(ls))
     return finTuple
-  except:
-     print("Exception user marking")
-
+  except Exception as e:
+     writeException(e)
 
 
 def writeResultFile(trainSet):
@@ -279,59 +286,99 @@ def writeResultFile(trainSet):
 def writeUsersFile():    
     if len(globalUsers) != len(globalCount):
         return
+    usersFile = open(os.path.join(path,"onlyDetectedTechsNR.txt"), "w")
     for i in range(0, len(globalCount)):
         usersFile.write(str(globalUsers[i]))
         usersFile.write(": ")
         usersFile.write(str(globalCount[i]))
         usersFile.write("\n") 
+    usersFile.close()
+    shutil.copyfile(os.path.join(path, "onlyDetectedTechsNR.txt"), os.path.join(path, "onlyDetectedTechsNR1.txt"))
+    os.remove(os.path.join(path,"onlyDetectedTechsNR.txt"))
 
 
 #TO PREPARE USERS RECOGNITION FOR MULTITHREADING
 def writeUsers():
-    phr = []  
-    threadsL.append(1) 
-    while len(trainSet)>0:
-        try: 
-            sema.acquire()
-            finVal = 10
-            if len(trainSet)<10:
-                finVal = len(trainSet)            
-            for i in range(0,finVal):
-                phr.append(trainSet[i])
-            for i in range(0,len(phr)):
-                trainSet.pop(0) 
-            sema.release() 
-            checkMarkedArrayPresence(phr)
-            phr.clear()
-        except:
-             print("Exception thread")
-    threadsL.pop(0)
-    #print("THREAD FINISHED " + str(len(threadsL)))
-    if len(threadsL)==0:
-        writeResultFile(onlyUsers)
-        writeUsersFile()
-        #print("STATISTICS WRITTEN ")
+    try:
+       phr = []  
+       threadsL.append(1) 
+       while len(trainSet)>0:
+           try: 
+               sema.acquire()
+               finVal = 10
+               if len(trainSet)<10:
+                  finVal = len(trainSet)            
+               for i in range(0,finVal):
+                  phr.append(trainSet[i])
+               for i in range(0,len(phr)):
+                  trainSet.pop(0) 
+               sema.release() 
+               checkMarkedArrayPresence(phr)
+               phr.clear()
+           except Exception as e:
+               writeException(e)
+       threadsL.pop(0)
+       #print("THREAD FINISHED " + str(len(threadsL)))
+       if len(threadsL)==0:
+           writeResultFile(onlyUsers)
+           writeUsersFile()
+           print("STATISTICS WRITTEN ")
+           if os.path.exists(os.path.join(path,dataFileName)):
+               os.remove(os.path.join(path,dataFileName))
+    except Exception as e:
+       writeException(e)
         
+def writeException(e):
+    print("Raised exception: " + str(e))
+    f = open(os.path.join(path, "onlyDetectedTechsNR1.txt"),"w")
+    f.write("Failed to prepare train set. Exception: "+ str(e))
+    f.close()
+
 
 #MAIN SCRIPTS
 
+try:   
+   dataFileName = str(sys.argv[1])
+   print(dataFileName)
+   phSt = int(sys.argv[2])
+   print(phSt)
+   phNum = int(sys.argv[3])
+   print(phNum)
+   path = str(sys.argv[4])
+   print(path)
+   trName = str(os.path.join(path,"trainthC1.txt"))
+   vName = str(os.path.join(path,"valthC1.txt"))
+   teName = str(os.path.join(path,"testthC1.txt"))
+   tr = open(trName, "w")
+   v = open(vName, "w")
+   te = open(teName, "w")
+   tr.close()
+   v.close()
+   te.close()
+   #TO GET DATA FROM TEST FILE AND USERS FILE
+   testmodelpath= os.path.join(os.getcwd(),"trainmodel")
+   trainSet = getPhrasesFromFile(dataFileName, phSt, phNum)
+   print("Taken phrases - " + str(trainSet))
+   techs = getDataFromFile(os.path.join(testmodelpath,"techList.txt"))
+   print("Taken techs - " + str(len(techs)))
+   getUserInPatentLanguage(trainSet)
+   #goldsets = getWordsFromGoldenSet("GoldenSet.txt")
+   #print("Taken goldsets - ")
+   #print(len(goldsets))
+   rep = 0
+   i=0
 
-rep = 0
-i=0
-
-usersFile = open(os.path.join(path,"onlyDetectedTechsNR1.txt"), "w")
-#writeUsers(trainSet, users)
-
-threads = []
-for cnt in range(0,10):
-    threads.append(Thread(target=writeUsers))
+   threads = []
+   for cnt in range(0,10):
+      threads.append(Thread(target=writeUsers))
 
 
-for ph in threads:
-    #print("thread start")
-    ph.start()
+   for ph in threads:
+       #print("thread start")
+       ph.start()
 
-
+except Exception as e:
+    writeException(e)
 
 
 

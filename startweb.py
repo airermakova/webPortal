@@ -78,6 +78,17 @@ def run_remotely(command):
     ray.shutdown()
 
 
+def waitForFile(fileToAwait, userpath, fileToSee):
+    output=""
+    filePath = os.path.join(userpath,fileToAwait)
+    while os.path.exists(filePath)==False:
+        time.sleep(1)
+    with open(filePath, 'r') as file:
+        output = file.read()
+    send_from_directory(userpath,fileToSee)
+    return output
+
+
 def allowed_file(filename):
     return '.' in filename and \
            filename.rsplit('.', 1)[1].lower() in "pt"
@@ -100,48 +111,6 @@ def downloads(filename):
     # Returning file from appended path
     if(os.path.exists(os.path.join(userpath,filename))==True):
         return send_file(os.path.join(userpath,filename), as_attachment=True)
-
-
-@app.route('/gettrainingset/', methods=['GET','POST'])
-def gettrainingset():
-    path=""
-    output=""
-    args = []
-    if request.method == "POST":
-        print("POST")
-        #phrases number area
-        inputN = request.form.get('inputN')
-        num = request.form['inputN']
-        inputN = request.form.get('inputF')
-        st = request.form['inputF']
-        if num == None or num=="":
-             num = "0"
-        if st == None or st=="":
-             st = "0"
-        print(num + "..." + st)
-        #file uploading area
-        file = request.files['file']
-        if file.filename == '':
-            output = 'No text file selected'
-        elif allowed_txt_file(file.filename):
-            prepareUsersFiles(file, current_user.username, ["prepareTestSetsComplexUsersNoRepeat.py"])
-            userpath=os.path.join(userdatapath, current_user.username)
-            args.append(os.path.join(userpath,file.filename))
-            args.append(st)
-            args.append(num)
-            args.append(userpath)
-            command = "C:/Users/airer/AppData/Local/Programs/Python/Python36/python.exe " + str(os.path.join(userpath,'prepareTestSetsComplexUsersNoRepeat.py')) + " " + " ".join(args)
-            print(command)
-            run_remotely(command)
-            with open(os.path.join(userpath,'onlyDetectedUsersNR1.txt'), 'r') as file:
-                output = file.read()
-            print(os.path.join(userpath,"trainnrC1.txt"))
-            send_from_directory(userpath, "trainnrC1.txt")
-        else:
-            output="uploaded file has to have .txt extention"
-        os.remove(os.path.join(userpath,"prepareTestSetsComplexUsersNoRepeat.py"))
-    return render_template('gettrainingset.html', outputP=output)
-
 
 
 @app.route('/gettechtrainingset/', methods=['GET','POST'])
@@ -169,6 +138,7 @@ def gettechtrainingset():
         if file.filename == '':
             output = 'No text file selected'
         elif allowed_txt_file(file.filename):
+            removeFiles(userpath,["onlyDetectedTechsNR1.txt", "onlyDetectedUsersNR1.txt"])
             fileNm = file.filename
             print("POST get training set")
             scripts = []
@@ -185,24 +155,18 @@ def gettechtrainingset():
                 command = "C:/Users/airer/AppData/Local/Programs/Python/Python36/python.exe " + str(os.path.join(userpath,'prepareTestSetsComplexUsersNoRepeat.py')) + " " + " ".join(args)
                 print(command)
                 run_remotely(command)
-                with open(os.path.join(userpath,'onlyDetectedUsersNR1.txt'), 'r') as file:
-                    output = file.read()
-                print(os.path.join(userpath,"trainnrC1.txt"))
-                send_from_directory(userpath, "trainnrC1.txt")
+                output = waitForFile("onlyDetectedUsersNR1.txt",userpath,"trainnrC1.txt")
                 visUs="visible"
             if request.form.get('techs'):
                 print("get techs")
                 command1 = "C:/Users/airer/AppData/Local/Programs/Python/Python36/python.exe " + str(os.path.join(userpath,'prepareTestSetsComplexTechNoRepeat.py')) + " " + " ".join(args)
                 print(command1)
-                run_remotely(command1)
-                with open(os.path.join(userpath,'onlyDetectedTechsNR1.txt'), 'r') as file:
-                    output = output + file.read()
-                print(os.path.join(userpath,"trainthC1.txt"))
-                send_from_directory(userpath, "trainthC1.txt")
-                visTh="visible"
+                run_remotely(command1) 
+                output = waitForFile("onlyDetectedTechsNR1.txt",userpath,"trainthC1.txt") 
+                visTh="visible"              
         else:
-            output="uploaded file has to have .txt extention"
-        removeFiles(userpath,["prepareTestSetsComplexUsersNoRepeat.py","prepareTestSetsComplexTechNoRepeat.py", fileNm])
+            output="uploaded file has to have .txt extention"        
+        removeFiles(userpath,["prepareTestSetsComplexUsersNoRepeat.py","prepareTestSetsComplexTechNoRepeat.py"])
     return render_template('gettechtrainingset.html', outputP=output, visibilitynr=visUs, visibilityth=visTh)
 
 

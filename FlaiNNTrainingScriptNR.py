@@ -34,14 +34,17 @@ fileHandle = open(trainset, "r", encoding="utf8")
 texts = fileHandle.readlines()
 fileHandle.close()
 
-
 #prepare validation, test and training sets
 def prepareVal(fileNm, st, fn):
     fileHandle = open(fileNm, "w", encoding="utf8")
-    if len(texts)<st or len(texts)<fn:
+    if len(texts)<st: 
         for i in texts: 
             fileHandle.write(i)
-    elif len(texts)>fn:
+    elif len(texts)>st and len(texts)<(st+fn):
+        print(texts[st])
+        for i in range(st,len(texts)-st):
+            fileHandle.write(texts[i])
+    elif len(texts)>(st+fn):
         print(texts[st])
         for i in range(st,fn+st):
             fileHandle.write(texts[i])
@@ -50,30 +53,42 @@ def prepareVal(fileNm, st, fn):
 #control if all training set processed
 def trainChecker():
      start = 0
-     length = 50000
-
+     length = int(len(texts)/5)
+     corpuses = []
      while((start+length)<len(texts)):
-         print("START STAGE TRAINING")
-         train(start, length)
-         start = start + length
-     print("FINISH TRAINING")
-
-
-#training neural network function
-def train(start, length):
-     prepareVal(os.path.join(path, valFileTr), start, length)
-     print("START TO READ CORPUS")
-
-     #init a corpus using column format, data folder and the names of the train, dev and test files
-     my_corpus: Corpus = ColumnCorpus(data_folder, columns,
+         print("START CORP READING")
+         prepareVal(os.path.join(path, valFileTr), start, length)
+         my_corpus: Corpus = ColumnCorpus(data_folder, columns,
                               train_file=valFileTr,
                               test_file=valFileTs,
                               dev_file=valFileNm,
                               in_memory=False)
+         corpuses.append(my_corpus)
+         start = start + length
+         print("STOP CORP READING")
+     train(corpuses)
+     print("FINISH TRAINING")
+
+
+#training neural network function
+def train(corpuses):
+     #prepareVal(os.path.join(path, valFileTr), start, length)
+     print("START TO READ CORPUS")
+
+     #init a corpus using column format, data folder and the names of the train, dev and test files
+     #my_corpus: Corpus = ColumnCorpus(data_folder, columns,
+     #                         train_file=valFileTr,
+     #                         test_file=valFileTs,
+     #                         dev_file=valFileNm,
+     #                         in_memory=False)
 
      #english_corpus = UD_ENGLISH().downsample(0.1)
-     #corpus = MultiCorpus([english_corpus , my_corpus]).downsample(0.1)
-     corpus = my_corpus
+     if len(corpuses)<5: 
+         with io.open("training.log",'w',encoding='utf8') as f:
+             f.write("trainig failed")
+         return 
+     corpus = MultiCorpus([corpuses[0], corpuses[1], corpuses[2], corpuses[3], corpuses[4]]).downsample(0.1)
+     #corpus = my_corpus
 
      print("CORPUS READ")
      print(len(corpus.train))
@@ -97,7 +112,6 @@ def train(start, length):
 
      embeddings = StackedEmbeddings(embeddings=embedding_types)
 
-
      print("EMBEDDINGS")
 
      # 5. initialize sequence tagger
@@ -108,12 +122,14 @@ def train(start, length):
                         use_crf=True)
 
      # 6. initialize trainer
+     print("INIZIALIZE TRAINER")
      trainer = ModelTrainer(tagger, corpus)
 
      # 7. check if another trained model exists
      pt = os.path.join(data_folder, "trainedModel", "final-model.pt")
      if(os.path.exists(pt)):
         # 8. resume training
+        print("RESUME TRAINING")
         trained_model = SequenceTagger.load(pt)
         trainer.resume(trained_model,
               base_path=os.path.join(path,"trainedModel"),
@@ -124,6 +140,7 @@ def train(start, length):
                )
      else:
          # 9. start training
+         print("START TRAINING")
          trainer.train(os.path.join(path,"trainedModel"),
               learning_rate=learnRate,
               mini_batch_size=32,
