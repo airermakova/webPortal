@@ -44,6 +44,7 @@ globalCount = []
 onlyUsers = []
 foundUsers = []
 threadsL = []
+resultFileName = ""
 sema = Semaphore(1)
 stemmer = SnowballStemmer("english")
 
@@ -169,7 +170,7 @@ def getUserInPatentLanguage(trainSet):
         for ph in trainSet:
             langCode = detect(ph)
             if langCode != "en":
-                translated_text = translator.translate(ph,src=langCode, dest="en")
+                translated_text = translator.translate(ph,src=langCode,dest="en")
                 trainSet.append(translated_text.text)  
                 print(translated_text.text)     
     except Exception as e:
@@ -293,7 +294,7 @@ def writeUsersFile():
         usersFile.write(str(globalCount[i]))
         usersFile.write("\n") 
     usersFile.close()
-    shutil.copyfile(os.path.join(path, "onlyDetectedTechsNR.txt"), os.path.join(path, "onlyDetectedTechsNR1.txt"))
+    shutil.copyfile(os.path.join(path, "onlyDetectedTechsNR.txt"), os.path.join(path, resultFileName))
     os.remove(os.path.join(path,"onlyDetectedTechsNR.txt"))
 
 
@@ -322,17 +323,16 @@ def writeUsers():
        if len(threadsL)==0:
            writeResultFile(onlyUsers)
            writeUsersFile()
-           print("STATISTICS WRITTEN ")
-           if os.path.exists(os.path.join(path,dataFileName)):
-               os.remove(os.path.join(path,dataFileName))
+           print("STATISTICS WRITTEN ")           
     except Exception as e:
        writeException(e)
         
 def writeException(e):
     print("Raised exception: " + str(e))
-    f = open(os.path.join(path, "onlyDetectedTechsNR1.txt"),"w")
+    f = open(os.path.join(path, resultFileName),"w")
     f.write("Failed to prepare train set. Exception: "+ str(e))
     f.close()
+
 
 
 #MAIN SCRIPTS
@@ -346,9 +346,18 @@ try:
    print(phNum)
    path = str(sys.argv[4])
    print(path)
-   trName = str(os.path.join(path,"trainthC1.txt"))
-   vName = str(os.path.join(path,"valthC1.txt"))
-   teName = str(os.path.join(path,"testthC1.txt"))
+   purpose = str(sys.argv[5])
+   if purpose=="tech":
+      trName = str(os.path.join(path,"trainthC1.txt"))
+      vName = str(os.path.join(path,"valthC1.txt"))
+      teName = str(os.path.join(path,"testthC1.txt"))
+      resultFileName = "onlyDetectedTechsNR1.txt"
+   elif purpose=="us":
+      trName = str(os.path.join(path,"trainnrC1.txt"))
+      vName = str(os.path.join(path,"valnrC1.txt"))
+      teName = str(os.path.join(path,"testnrC1.txt"))
+      resultFileName = "onlyDetectedUsersNR1.txt"               
+
    tr = open(trName, "w")
    v = open(vName, "w")
    te = open(teName, "w")
@@ -359,7 +368,10 @@ try:
    testmodelpath= os.path.join(os.getcwd(),"trainmodel")
    trainSet = getPhrasesFromFile(dataFileName, phSt, phNum)
    print("Taken phrases - " + str(trainSet))
-   techs = getDataFromFile(os.path.join(testmodelpath,"techList.txt"))
+   if purpose=="us":
+      techs = getDataFromFile(os.path.join(testmodelpath,"usersList.txt"))
+   elif purpose=="tech":
+      techs = getDataFromFile(os.path.join(testmodelpath,"techList.txt"))
    print("Taken techs - " + str(len(techs)))
    getUserInPatentLanguage(trainSet)
    #goldsets = getWordsFromGoldenSet("GoldenSet.txt")

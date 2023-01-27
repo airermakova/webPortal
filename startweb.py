@@ -68,8 +68,9 @@ def runCommand(command):
     #print(command)
     #os.system(command)
 
-
-def run_remotely(command):
+def run_remotely(script, userpath, args):    
+    command = "C:/Users/airer/AppData/Local/Programs/Python/Python36/python.exe " + str(os.path.join(userpath,script))+ " " + " ".join(args)
+    print(command)
     ray.init()
     start_time = time.time()
     results = ray.get([runCommand.remote(command) for _ in range(os.cpu_count())])
@@ -77,16 +78,42 @@ def run_remotely(command):
     print('Sequence size: {}, Remote execution time: {}'.format(command, duration)) 
     ray.shutdown()
 
+def getUIArguments(request, names, nonVal):
+    vals=[]
+    for nm in names:
+        st = request.form[nm]
+        if st == None or st == "":
+            st = nonVal
+        print(str(st))
+        vals.append(str(st))
+    return vals
 
-def waitForFile(fileToAwait, userpath, fileToSee):
+def waitForFile(filesToAwait, userpath, fileToSee):
     output=""
-    filePath = os.path.join(userpath,fileToAwait)
-    while os.path.exists(filePath)==False:
-        time.sleep(1)
-    with open(filePath, 'r') as file:
-        output = file.read()
-    send_from_directory(userpath,fileToSee)
+    filesPath=[]
+    for fl in filesToAwait:    
+        filesPath.append(os.path.join(userpath,fl))
+    for fl in filesPath:
+        while os.path.exists(fl)==False:
+            time.sleep(1)
+        with open(fl, 'r') as file:
+            output += file.read()
+    if fileToSee !=None:
+        send_from_directory(userpath,fileToSee)
     return output
+
+
+def waitForRemoval(filesToAwait, userpath, filesToRemove):
+    output=""
+    filesPath=[]
+    for fl in filesToAwait:    
+        filesPath.append(os.path.join(userpath,fl))
+    for fl in filesPath:
+        while os.path.exists(fl)==False:
+            time.sleep(1)
+    for fl in filesToRemove:
+        if os.path.exists(os.path.join(userpath,fl)):    
+            os.remove(os.path.join(userpath,fl))
 
 
 def allowed_file(filename):
@@ -121,53 +148,46 @@ def gettechtrainingset():
     visTh="hidden"
     args = []
     if request.method == "POST":
-        fileNm = ""
-        userpath=os.path.join(userdatapath, current_user.username)
-        #phrases number area
-        inputN = request.form.get('inputN')
-        num = request.form['inputN']
-        inputN = request.form.get('inputF')
-        st = request.form['inputF']
-        if num == None or num=="":
-             num = "0"
-        if st == None or st=="":
-             st = "0"
-        print(num + "..." + st)
         #file uploading area
         file = request.files['file']
         if file.filename == '':
             output = 'No text file selected'
-        elif allowed_txt_file(file.filename):
-            removeFiles(userpath,["onlyDetectedTechsNR1.txt", "onlyDetectedUsersNR1.txt"])
-            fileNm = file.filename
-            print("POST get training set")
-            scripts = []
-            if request.form.get('users'):
-                scripts.append("prepareTestSetsComplexUsersNoRepeat.py")                
-            if request.form.get('techs'):
-                scripts.append("prepareTestSetsComplexTechNoRepeat.py") 
-            prepareUsersFiles(file, current_user.username, scripts)            
+        elif allowed_txt_file(file.filename):                  
+            fileNm = file.filename            
+            userpath=os.path.join(userdatapath, current_user.username) 
+            prepareUsersFiles(file, current_user.username, ["prepareTestSetsComplexTechNoRepeat.py"])            
+            #phrases number area
+            arg = getUIArguments(request, ['inputN','inputF'], "0")
+            num = arg[0]
+            st = arg[1]
+            print("phrase number: " + num + " start phrase: " + st)
             args.append(os.path.join(userpath,file.filename))
             args.append(st)
             args.append(num)
-            args.append(userpath)
+            args.append(userpath)              
+            flsToWait=[]
+            resFile=[]
             if request.form.get('users'):
-                command = "C:/Users/airer/AppData/Local/Programs/Python/Python36/python.exe " + str(os.path.join(userpath,'prepareTestSetsComplexUsersNoRepeat.py')) + " " + " ".join(args)
-                print(command)
-                run_remotely(command)
-                output = waitForFile("onlyDetectedUsersNR1.txt",userpath,"trainnrC1.txt")
-                visUs="visible"
+                flsToWait.append("onlyDetectedUsersNR1.txt")
             if request.form.get('techs'):
-                print("get techs")
-                command1 = "C:/Users/airer/AppData/Local/Programs/Python/Python36/python.exe " + str(os.path.join(userpath,'prepareTestSetsComplexTechNoRepeat.py')) + " " + " ".join(args)
-                print(command1)
-                run_remotely(command1) 
-                output = waitForFile("onlyDetectedTechsNR1.txt",userpath,"trainthC1.txt") 
-                visTh="visible"              
+                flsToWait.append("onlyDetectedTechsNR1.txt")  
+            
+            if request.form.get('users'):
+                args.append("us")
+                run_remotely('prepareTestSetsComplexTechNoRepeat.py',userpath,args)
+                output = waitForFile(["onlyDetectedUsersNR1.txt"],userpath,"trainnrC1.txt") 
+                visUs="visible"
+                args.remove("us")
+            if request.form.get('techs'):     
+                args.append("tech")
+                run_remotely('prepareTestSetsComplexTechNoRepeat.py',userpath,args) 
+                output = waitForFile(flsToWait,userpath,"trainthC1.txt") 
+                visTh="visible"
+            waitForRemoval(flsToWait,userpath,["prepareTestSetsComplexTechNoRepeat.py",fileNm])
         else:
             output="uploaded file has to have .txt extention"        
-        removeFiles(userpath,["prepareTestSetsComplexUsersNoRepeat.py","prepareTestSetsComplexTechNoRepeat.py"])
     return render_template('gettechtrainingset.html', outputP=output, visibilitynr=visUs, visibilityth=visTh)
+
 
 
 @app.route('/getchecknn/', methods=['GET','POST'])
@@ -212,20 +232,21 @@ def getchecknn():
             args.append(num)
             args.append(os.path.join(userpath,file.filename))
             args.append(userpath)
+            command = ""
             if request.form.get('users'):                
                 command = "C:/Users/airer/AppData/Local/Programs/Python/Python36/python.exe " + os.path.join(userpath,"FlaiNNTestMultiThreading.py") + " " + " ".join(args)
                 run_remotely(command)
-                with open(os.path.join(userpath,'NNStatistics.txt'), 'r') as file:
-                    output = "users detection results: " + file.read()
+                output = waitForFile('NNStatistics.txt',userpath,None)
             if request.form.get('techs'):
-                command1 = "C:/Users/airer/AppData/Local/Programs/Python/Python36/python.exe " + os.path.join(userpath,"FlaiNNTestMultiThreadingTech.py") + " " + " ".join(args)
-                run_remotely(command1)
-                with open(os.path.join(userpath,'NNStatisticsTech.txt'), 'r') as file:
-                    output = output + "Technologies detection results: " + file.read()
+                command = "C:/Users/airer/AppData/Local/Programs/Python/Python36/python.exe " + os.path.join(userpath,"FlaiNNTestMultiThreadingTech.py") + " " + " ".join(args)
+                run_remotely(command)
+                #output += waitForFile('NNStatisticsTech.txt',userpath,None)
+            if output!="":
+                removeFiles(userpath,["FlaiNNTestMultiThreadingTech.py","FlaiNNTestMultiThreading.py","patents.txt",dataFile])  
         else:
-            output="uploaded file has to have .pt extention"      
-        removeFiles(userpath,["FlaiNNTestMultiThreadingTech.py","FlaiNNTestMultiThreading.py","patents.txt",dataFile])            
+            output="uploaded file has to have .pt extention"
     return render_template('getchecknn.html', outputP=output)
+
 
 
 @app.route('/getusers/', methods=['GET','POST'])
@@ -235,6 +256,10 @@ def getusers():
     if request.method == "POST":
         inputP = request.form.get('inputP')
         path = request.form['inputP']
+        if len(str(path))>1:
+            wf = open (os.path.join(userpath,"data.txt"), "w", encoding='utf-8')
+            wf.write(str(path))  
+            wf.close()
         print("POST "+str(path))
         userpath=os.path.join(userdatapath, current_user.username)
         arg="None"
@@ -245,12 +270,8 @@ def getusers():
             model.save(os.path.join(userpath,"model.pt"))
         # get patent to take users from
         args=[]        
-        if len(str(path))>1:
-            wf = open (os.path.join(userpath,"data.txt"), "w", encoding='utf-8')
-            wf.write(str(path))  
-            wf.close()
-        file = request.files['pat']
         args.append(userpath)
+        file = request.files['pat']
         if file.filename != '':
             fileName = file.filename   
             args.append(file.filename)
@@ -259,19 +280,19 @@ def getusers():
             args.append("data.txt")          
             prepareUsersFiles(None, current_user.username, ["demoForNNFullNN.py"])         
         # start processing request
+        command = ""
         if request.form.get('users'):  
             shutil.copyfile(os.path.join(os.getcwd(),"trainerNRFinal10Rep","final-model.pt"), os.path.join(userpath, "model.pt"))     
             command = "C:/Users/airer/AppData/Local/Programs/Python/Python36/python.exe " + os.path.join(userpath, "demoForNNFullNN.py") + " " + " ".join(args)
             run_remotely(command)
-            with open(os.path.join(userpath,'results.txt'), 'r') as file:
-                output = file.read().replace(".", "\n")
+            output = waitForFile("results.txt",userpath,"results.txt")
         if request.form.get('techs'):
             shutil.copyfile(os.path.join(os.getcwd(),"trainerNRFinal10Rep","final-model_tech.pt"), os.path.join(userpath, "model.pt"))  
-            command1 = "C:/Users/airer/AppData/Local/Programs/Python/Python36/python.exe " + os.path.join(userpath, "demoForNNFullNN.py") + " " + " ".join(args)
-            run_remotely(command1)
-            with open(os.path.join(userpath,'results.txt'), 'r') as file:
-                output = output + file.read().replace(".", "\n")
-        removeFiles(userpath,["demoForNNFullNN.py","data.txt",fileName,"model.pt"])
+            command = "C:/Users/airer/AppData/Local/Programs/Python/Python36/python.exe " + os.path.join(userpath, "demoForNNFullNN.py") + " " + " ".join(args)
+            run_remotely(command)
+            output += waitForFile("results.txt",userpath,"results.txt")
+        if output !="":            
+            removeFiles(userpath,["demoForNNFullNN.py","data.txt",fileName,"model.pt"])
     return render_template('getusers.html', inputP=path, outputP=output)
 
 
