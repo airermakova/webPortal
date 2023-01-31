@@ -98,7 +98,7 @@ def waitForFile(filesToAwait, userpath, fileToSee):
             time.sleep(1)
         with open(fl, 'r') as file:
             output += file.read()
-    if fileToSee !=None:
+    if os.path.exists(os.path.join(userpath,fileToSee))==False:
         send_from_directory(userpath,fileToSee)
     return output
 
@@ -327,14 +327,10 @@ def trainnn():
             args.append(inputME)
             args.append(inputLR)
             args.append(userpath)
-            command = "C:/Users/airer/AppData/Local/Programs/Python/Python36/python.exe " + str(os.path.join(userpath,'FlaiNNTrainingScriptNR.py')) + " " + " ".join(args)
-            print(command)
-            run_remotely(command)
-            while os.path.exists(os.path.join(userpath,"trainedModel",'training.log'))==False:
-                time.sleep(1)
-            with open(os.path.join(userpath,"trainedModel",'training.log'), 'r') as file:
-                output = file.read()
-                visTr = "visible"
+            run_remotely('FlaiNNTrainingScriptNR.py',userpath,args)
+            output = waitForFile(["training.log"],userpath,"final-model.pt") 
+            #waitForRemoval(["training.log"], userpath, ["FlaiNNTrainingScriptNR.py"])
+            visTr = "visible"
             #send_from_directory(os.path.join(userpath,"trainedModel"), "final-model.pt")
         else:
             output="uploaded file has to have .txt extention"

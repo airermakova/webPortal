@@ -8,6 +8,7 @@ from flair.datasets import UD_ENGLISH
 import sys
 import os
 import io
+import shutil
 from threading import *
 
 valFileTr = "trn.txt"
@@ -50,24 +51,34 @@ def prepareVal(fileNm, st, fn):
             fileHandle.write(texts[i])
     fileHandle.close()
 
+def writeexception(e):
+    print("EXCEPTION FINISH TRAINING" + str(e))
+    with codecs.open(os.path.join(path,"training.log"),'w', "utf-8") as f:
+       f.write("trainig failed" + str(e))
+
+
 #control if all training set processed
 def trainChecker():
-     start = 0
-     length = int(len(texts)/5)
-     corpuses = []
-     while((start+length)<len(texts)):
-         print("START CORP READING")
-         prepareVal(os.path.join(path, valFileTr), start, length)
-         my_corpus: Corpus = ColumnCorpus(data_folder, columns,
+     try:
+        start = 0
+        length = int(len(texts)/5)
+        corpuses = []
+        while((start+length)<=len(texts)-1):
+           print("START CORP READING")
+           prepareVal(os.path.join(path, valFileTr), start, length)
+           my_corpus: Corpus = ColumnCorpus(data_folder, columns,
                               train_file=valFileTr,
                               test_file=valFileTs,
                               dev_file=valFileNm,
                               in_memory=False)
-         corpuses.append(my_corpus)
-         start = start + length
-         print("STOP CORP READING")
-     train(corpuses)
-     print("FINISH TRAINING")
+           corpuses.append(my_corpus)
+           start = start + length
+           print("STOP CORP READING")
+        train(corpuses)
+        print("FINISH TRAINING")
+        shutil.copy(os.path.join(path,"trainedModel","training.log"), os.path.join(path,"training.log"))
+     except Exception as e:
+        writeexception(str(e))
 
 
 #training neural network function
@@ -84,8 +95,8 @@ def train(corpuses):
 
      #english_corpus = UD_ENGLISH().downsample(0.1)
      if len(corpuses)<5: 
-         with io.open("training.log",'w',encoding='utf8') as f:
-             f.write("trainig failed")
+         with io.open(os.path.join(path,"training.log"),'w',encoding='utf8') as f:
+             f.write("trainig failed, corpus length less than 5")
          return 
      corpus = MultiCorpus([corpuses[0], corpuses[1], corpuses[2], corpuses[3], corpuses[4]]).downsample(0.1)
      #corpus = my_corpus
@@ -152,12 +163,10 @@ def train(corpuses):
 
 try:
 
-     prepareVal(os.path.join(path, valFileNm), 0, 500)
-     prepareVal(os.path.join(path, valFileTs), 300, 600)
+     prepareVal(os.path.join(path, valFileNm), 0, int(len(texts)/5))
+     prepareVal(os.path.join(path, valFileTs), 0, int(len(texts)/5))
      mainThread = Thread(target=trainChecker)     
      mainThread.start()
 
 except Exception as e:
-    print("EXCEPTION FINISH TRAINING" + str(e))
-    with io.open("training.log",'w',encoding='utf8') as f:
-       f.write("trainig failed")
+    writeexception(str(e))
