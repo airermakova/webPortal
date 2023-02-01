@@ -240,13 +240,11 @@ def getchecknn():
             args.append(userpath)
             command = ""
             if request.form.get('users'):                
-                command = "C:/Users/airer/AppData/Local/Programs/Python/Python36/python.exe " + os.path.join(userpath,"FlaiNNTestMultiThreading.py") + " " + " ".join(args)
-                run_remotely(command)
+                run_remotely("FlaiNNTestMultiThreading.py", userpath, args)
                 output = waitForFile('NNStatistics.txt',userpath,None)
             if request.form.get('techs'):
-                command = "C:/Users/airer/AppData/Local/Programs/Python/Python36/python.exe " + os.path.join(userpath,"FlaiNNTestMultiThreadingTech.py") + " " + " ".join(args)
-                run_remotely(command)
-                #output += waitForFile('NNStatisticsTech.txt',userpath,None)
+                run_remotely("FlaiNNTestMultiThreadingTech.py", userpath, args) 
+                output += waitForFile('NNStatisticsTech.txt',userpath,None)
             if output!="":
                 removeFiles(userpath,["FlaiNNTestMultiThreadingTech.py","FlaiNNTestMultiThreading.py","patents.txt",dataFile])  
         else:
