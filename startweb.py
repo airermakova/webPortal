@@ -9,6 +9,7 @@ import os
 import shutil
 import ray
 import time
+import codecs
 import subprocess
 import win32com.client
 
@@ -95,11 +96,16 @@ def waitForFile(filesToAwait, userpath, fileToSee):
         filesPath.append(os.path.join(userpath,fl))
     for fl in filesPath:
         while os.path.exists(fl)==False:
-            time.sleep(1)
-        with open(fl, 'r') as file:
-            output += file.read()
-    if os.path.exists(os.path.join(userpath,fileToSee))==False:
+            time.sleep(5)
+        print(str(fl))
+        file = open(str(fl), "r", encoding="utf8")
+        lns = file.readlines()
+        for st in lns:
+            output +=st
+        file.close()
+    if os.path.exists(os.path.join(userpath,fileToSee))==True:
         send_from_directory(userpath,fileToSee)
+    print("READ")
     return output
 
 
@@ -329,7 +335,7 @@ def trainnn():
             args.append(userpath)
             run_remotely('FlaiNNTrainingScriptNR.py',userpath,args)
             output = waitForFile(["training.log"],userpath,"final-model.pt") 
-            #waitForRemoval(["training.log"], userpath, ["FlaiNNTrainingScriptNR.py"])
+            waitForRemoval(["training.log"], userpath, ["FlaiNNTrainingScriptNR.py"])
             visTr = "visible"
             #send_from_directory(os.path.join(userpath,"trainedModel"), "final-model.pt")
         else:
