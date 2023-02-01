@@ -8,7 +8,9 @@ from flair.datasets import UD_ENGLISH
 import sys
 import os
 import io
+import codecs
 import shutil
+from flair.embeddings import FlairEmbeddings, TransformerWordEmbeddings
 from threading import *
 
 valFileTr = "trn.txt"
@@ -120,8 +122,8 @@ def train(corpuses):
         #FlairEmbeddings('news-forward'),
         #FlairEmbeddings('news-backward'),
       ]
-
-     embeddings = StackedEmbeddings(embeddings=embedding_types)
+     #bert_embedding = TransformerWordEmbeddings('bert-base-multilingual-cased')
+     embeddings = StackedEmbeddings(embedding_types)
 
      print("EMBEDDINGS")
 
